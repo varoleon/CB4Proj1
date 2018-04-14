@@ -2,6 +2,10 @@ package p0;
 
 import java.util.Scanner;
 
+import users.Admin;
+import users.Role;
+import users.User;
+
 public class Menu {
 	private Scanner sc;
 	private Login loginObj;
@@ -87,13 +91,12 @@ public class Menu {
 	}
 
 	public void sendMsgOp() {
-		Database db = Database.getDbInst();
-		db.printUsernames();
+		loginObj.getDBManager().printUsernames();
 		System.out.println("Choose from the above list");
 		System.out.print("Receiver (username): ");
 		String username = sc.nextLine();
 
-		User receiver = db.getUserByUsername(username);
+		User receiver = loginObj.getDBManager().getUserByUsername(username);
 
 		// check the existence of receiver
 		if (receiver != null) {
@@ -113,8 +116,7 @@ public class Menu {
 		String username = sc.nextLine();
 
 		// check username availability
-		Database db = Database.getDbInst();
-		if (!db.isUsernameInUse(username)) {
+		if (!loginObj.getDBManager().isUsernameInUse(username)) {
 
 			System.out.print("Password : ");
 			String password = sc.nextLine();
@@ -148,18 +150,21 @@ public class Menu {
 
 	private void removeUser() {
 		System.out.println("---Remove User---");
-		Database db = Database.getDbInst();
-		db.printUsernames();
+		
+		loginObj.getDBManager().printUsernames();
 		System.out.print("Select a user, from above list to remove: ");
 		String username = sc.nextLine();
-
-		System.out.print("Are you sure you want delete user " + username + "? (y/n): ");
-		String c = sc.nextLine();
-
-		if (c.equalsIgnoreCase("y")) {
-			Admin admin = (Admin) loginObj.getLoggedInUser();
-			admin.removeUser(username);
-			System.out.print("User " + username + " deleted.");
+		if (!loginObj.getDBManager().isUsernameInUse(username)) {
+			System.out.println("Error. User "+username+" not found");
+		}else {	
+			System.out.print("Are you sure you want delete user " + username + "? (y/n): ");
+			String c = sc.nextLine();
+	
+			if (c.equalsIgnoreCase("y")) {
+				Admin admin = (Admin) loginObj.getLoggedInUser();
+				admin.removeUser(username);
+				System.out.println("User " + username + " deleted.");
+			}
 		}
 	}
 

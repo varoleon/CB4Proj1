@@ -1,18 +1,21 @@
-package p0;
+package users;
+
+import database.DBManagerAdmin;
 
 public class Admin extends Editor {
-
+	private DBManagerAdmin dbm;
+	
 	public Admin(int id, String name, String username, String password) {
 		super(id, name, username, password);
 		this.role = Role.ADMIN;
+		this.dbm= new DBManagerAdmin();
 	}
 	
 	public boolean registerUser(String name,String username , String password, Role role) {
-		Database db= Database.getDbInst(); 
 		// Register process
-		User user =db.getUserByUsername(username);
+		User user =dbm.getUserByUsername(username);
 		if (user==null) {
-			db.insertNewUser(name, username , password, role);
+			dbm.insertNewUser(name, username , password, role);
 			return true;
 		}
 		
@@ -20,10 +23,9 @@ public class Admin extends Editor {
 	}
 	
 	public boolean removeUser(String username) {
-		Database db= Database.getDbInst(); 
 		
-		if (db.isUsernameInUse(username)) {
-			db.removeUserByUsername(username);
+		if (dbm.isUsernameInUse(username)) {
+			dbm.removeUserByUsername(username);
 			return true;
 		}
 		

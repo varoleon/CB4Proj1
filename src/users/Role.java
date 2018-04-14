@@ -1,4 +1,4 @@
-package p0;
+package users;
 
 public enum Role {
 	USER,EDITOR,ADMIN
