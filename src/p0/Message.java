@@ -11,6 +11,7 @@ public class Message {
 	protected User receiver;
 	protected String body;
 	protected Timestamp timestamp;
+	private boolean isResponse = false;
 
 	public Message(User sender, User receiver, String body) {
 		super();
@@ -32,7 +33,13 @@ public class Message {
 	}
 
 	public void saveToSenderReceiverFile() {
-		writeToFile(Config.CONVERSATION_FOLDER + this.sender.username + "_to_" + this.receiver.username + ".txt");
+		if (new File(Config.CONVERSATION_FOLDER + this.receiver.username + "_to_" + this.sender.username + ".txt")
+				.exists()) {
+			isResponse = true;
+			writeToFile(Config.CONVERSATION_FOLDER + this.receiver.username + "_to_" + this.sender.username + ".txt");
+		} else {
+			writeToFile(Config.CONVERSATION_FOLDER + this.sender.username + "_to_" + this.receiver.username + ".txt");
+		}
 	}
 
 	public void storeToDb() {
@@ -48,7 +55,6 @@ public class Message {
 			try {
 				file.createNewFile();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -56,10 +62,15 @@ public class Message {
 			FileWriter fw = new FileWriter(file, true);
 			bw = new BufferedWriter(fw);
 
-			bw.append(this.toString());
-			bw.append("\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
+			if (isResponse) {
+				String identation = "\t\t\t\t";
+				bw.append(identation + this.toString().replace("\n", "\n" + identation));
+				bw.append("\n" + identation + "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
+			} else {
+				bw.append(this.toString());
+				bw.append("\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
+			}
 
-			System.out.println("File written Successfully");
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
