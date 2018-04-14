@@ -51,7 +51,7 @@ public class Menu {
 
 	public void mainMenu() {
 		while (true) {
-			//only logged in users are allowed
+			// only logged in users are allowed
 			if (!loginObj.isLoggedIn())
 				break;
 
@@ -87,34 +87,35 @@ public class Menu {
 	}
 
 	public void sendMsgOp() {
-		Database db=Database.getDbInst();
+		Database db = Database.getDbInst();
 		db.printUsernames();
 		System.out.println("Choose from the above list");
 		System.out.print("Receiver (username): ");
-		String username=sc.nextLine();
-		
-		User receiver= db.getUserByUsername(username);
-				
-		//check the existence of receiver
-		if (receiver!=null) {
+		String username = sc.nextLine();
+
+		User receiver = db.getUserByUsername(username);
+
+		// check the existence of receiver
+		if (receiver != null) {
 			System.out.print("Your Message: ");
-			String m=sc.nextLine();
-			loginObj.getLoggedInUser().messageTo(receiver, m);
+			String m = sc.nextLine();
+			System.out.println(loginObj.getLoggedInUser().messageTo(receiver, m));
 			System.out.println("Your message has been sent successfully.");
-		}else {
+		} else {
 			System.out.println("Receiver not found");
 		}
 	}
+
 	private void registerUsers() {
-		
+
 		System.out.println("---Register New User---");
 		System.out.print("Username : ");
 		String username = sc.nextLine();
-		
+
 		// check username availability
 		Database db = Database.getDbInst();
 		if (!db.isUsernameInUse(username)) {
-			
+
 			System.out.print("Password : ");
 			String password = sc.nextLine();
 			System.out.print("Name : ");
@@ -124,49 +125,48 @@ public class Menu {
 			Role role = Role.USER;
 			switch (roleStr) {
 			case "ADMIN":
-				role=Role.ADMIN;
+				role = Role.ADMIN;
 				break;
 			case "EDITOR":
-				role=Role.EDITOR;
+				role = Role.EDITOR;
 				break;
 			case "USER":
-				role=Role.USER;
+				role = Role.USER;
 				break;
-			default: 
+			default:
 				System.out.println("Didn't understand the role. I'll create a USER");
 			}
-			
-			Admin admin = (Admin)loginObj.getLoggedInUser();
-			
+
+			Admin admin = (Admin) loginObj.getLoggedInUser();
+
 			admin.registerUser(name, username, password, role);
-			System.out.println("User "+username+" registered succesfully");
-		}else {
-			System.out.println("Error. The username "+username+" already exists");
-		}		
+			System.out.println("User " + username + " registered succesfully");
+		} else {
+			System.out.println("Error. The username " + username + " already exists");
+		}
 	}
-	
+
 	private void removeUser() {
 		System.out.println("---Remove User---");
-		Database db=Database.getDbInst();
+		Database db = Database.getDbInst();
 		db.printUsernames();
 		System.out.print("Select a user, from above list to remove: ");
 		String username = sc.nextLine();
-		
-		System.out.print("Are you sure you want delete user "+username+"? (y/n): ");
+
+		System.out.print("Are you sure you want delete user " + username + "? (y/n): ");
 		String c = sc.nextLine();
-		
-		if(c.equalsIgnoreCase("y")) {
-			Admin admin = (Admin)loginObj.getLoggedInUser();
+
+		if (c.equalsIgnoreCase("y")) {
+			Admin admin = (Admin) loginObj.getLoggedInUser();
 			admin.removeUser(username);
-			System.out.print("User "+username+" deleted.");
+			System.out.print("User " + username + " deleted.");
 		}
 	}
-	
 
 	private void menuOperations(String choice) {
 		switch (choice) {
 		case "r":
-			//Register new user
+			// Register new user
 			if (loginObj.getRoleLoggedInUser() == Role.USER || loginObj.getRoleLoggedInUser() == Role.EDITOR) {
 				System.out.println("No access to this command.You are not Admin");
 				break;
@@ -195,11 +195,11 @@ public class Menu {
 			// Edit messages
 			break;
 		case "s":
-			// Send message to someone	
+			// Send message to someone
 			sendMsgOp();
 			break;
 		case "i":
-			// Income messages	
+			// Income messages
 			loginObj.getLoggedInUser().readIncomeMessages();
 			break;
 		case "l":
