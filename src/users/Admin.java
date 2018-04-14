@@ -11,25 +11,13 @@ public class Admin extends Editor {
 		this.dbm= new DBManagerAdmin();
 	}
 	
-	public boolean registerUser(String name,String username , String password, Role role) {
+	public int registerUser(String name,String username , String password, Role role) {
 		// Register process
-		User user =dbm.getUserByUsername(username);
-		if (user==null) {
-			dbm.insertNewUser(name, username , password, role);
-			return true;
-		}
-		
-		return false;
+		return dbm.insertNewUser(name, username , password, role);
 	}
 	
-	public boolean removeUser(String username) {
-		
-		if (dbm.isUsernameInUse(username)) {
-			dbm.removeUserByUsername(username);
-			return true;
-		}
-		
-		return false;
+	public int removeUser(String username) {	
+		return dbm.removeUserByUsername(username);
 	}
 	
 }

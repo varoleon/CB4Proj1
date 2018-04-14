@@ -10,9 +10,12 @@ public class Editor extends User {
 		this.role = Role.EDITOR;
 		this.dbm = new DBManagerEditor();
 	}
+	public int deleteMessage(int id) {
+		return dbm.deleteMessageById(id);
+	}
 	
-	public void editMessage() {
-		dbm.editMessage();
+	public int editMessage() {
+		return dbm.editMessage();
 	}
 
 }

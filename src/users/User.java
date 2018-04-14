@@ -63,9 +63,10 @@ public class User {
 	
 	public Message messageTo(User receiver, String message) {
 		Message m =new Message(this, receiver, message);
+		//store to db must run first to get message id from db
+		m.storeToDb();
 		m.saveToLog();
 		m.saveToSenderReceiverFile();
-		m.storeToDb();
 		return m;
 	}
 	

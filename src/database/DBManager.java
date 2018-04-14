@@ -140,13 +140,29 @@ public class DBManager {
 		return returnFlag;
 	}
 
-
-	public void insertNewMessage(int sId, int rId, String body, Timestamp timestamp) {
+	//InsertNewMessage returns auto generated message id
+	public int insertNewMessage(int sId, int rId, String body, Timestamp timestamp) {
 		connect();
+		int mId=0; //message id to be returned
 		String sql = "INSERT INTO messages VALUES (NULL,'" + sId + "','" + rId + "','" + body + "','" + timestamp
 				+ "')";
-		modifyDB(sql);
+		Statement stmt;
+		try {
+			stmt = conn.createStatement();
+			stmt.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+			
+			ResultSet mIdrs = stmt.getGeneratedKeys();
+			mId=0;
+			while(mIdrs.next()){
+				mId= mIdrs.getInt(1);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		disconnect();
+		return mId;
 	}
 
 	public void printUsernames() {

@@ -14,6 +14,7 @@ public class Message {
 	protected User receiver;
 	protected String body;
 	protected Timestamp timestamp;
+	protected int id;
 	private boolean isResponse = false;
 
 	public Message(User sender, User receiver, String body) {
@@ -27,7 +28,7 @@ public class Message {
 
 	@Override
 	public String toString() {
-		return "Message From: " + sender.getUsername() + "\t  To: " + receiver.getUsername() + "\nSent on: " + timestamp + "\n\t"
+		return "Message id:"+id+"\nFrom: " + sender.getUsername() + "\t  To: " + receiver.getUsername() + "\nSent on: " + timestamp + "\n\t"
 				+ body;
 	}
 
@@ -47,7 +48,7 @@ public class Message {
 
 	public void storeToDb() {
 		DBManager dbm = new DBManager();
-		dbm.insertNewMessage(sender.getId(), receiver.getId(), body, timestamp);
+		this.id=dbm.insertNewMessage(sender.getId(), receiver.getId(), body, timestamp);
 	}
 
 	private void writeToFile(String filepath) {
