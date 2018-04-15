@@ -6,7 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Timestamp;
 
-import database.DBManager;
 import users.User;
 
 public class Message {
@@ -49,8 +48,7 @@ public class Message {
 	}
 
 	public void storeToDb() {
-		DBManager dbm = new DBManager();
-		this.id = dbm.insertNewMessage(sender.getId(), receiver.getId(), body, timestamp);
+		this.sender.storeMsgToDB(sender.getId(), receiver.getId(), body, timestamp);
 	}
 
 	private void writeToFile(String filepath) {

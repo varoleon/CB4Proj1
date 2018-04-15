@@ -3,7 +3,7 @@ package database;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class DBManagerEditor extends DBManager {
+public class DBManagerEditor extends DBManagerUser {
 	public DBManagerEditor() {
 		super();
 	}

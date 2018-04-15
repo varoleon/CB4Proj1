@@ -1,6 +1,9 @@
 package users;
 
-import database.DBManager;
+
+import java.sql.Timestamp;
+
+import database.DBManagerUser;
 import p0.Message;
 
 public class User {
@@ -8,7 +11,7 @@ public class User {
 	protected Role role;
 	protected int id;
 	
-	private DBManager dbm;
+	private DBManagerUser dbm;
 
 	public User(int id, String name, String username, String password) {
 		super();
@@ -17,7 +20,7 @@ public class User {
 		this.username = username;
 		this.password = password;
 		this.role = Role.USER;
-		this.dbm = new DBManager();
+		this.dbm = new DBManagerUser();
 	}
 
 	public String getName() {
@@ -74,5 +77,9 @@ public class User {
 		dbm.printIncomeMessages(id);
 	}
 	
+	public int storeMsgToDB( int sId, int rId, String body, Timestamp timestamp ) {
+		this.id = dbm.insertNewMessage(sId, rId, body, timestamp);
+		return 0;
+	}
 
 }

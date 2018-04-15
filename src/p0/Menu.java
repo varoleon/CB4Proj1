@@ -92,6 +92,7 @@ public class Menu {
 	}
 
 	public void sendMsgOp() {
+		System.out.println("---Send New Message---");
 		loginObj.getDBManager().printUsernames();
 		System.out.println("Choose from the above list");
 		System.out.print("Receiver (username): ");
@@ -110,7 +111,7 @@ public class Menu {
 		}
 	}
 
-	private void registerUsers() {
+	private void registerUsersOp() {
 
 		System.out.println("---Register New User---");
 		System.out.print("Username : ");
@@ -152,7 +153,7 @@ public class Menu {
 		}
 	}
 
-	private void removeUser() {
+	private void removeUserOp() {
 		System.out.println("---Remove User---");
 
 		loginObj.getDBManager().printUsernames();
@@ -206,6 +207,7 @@ public class Menu {
 		if (!loginObj.getDBManager().isUsernameInUse(username)) {
 			System.out.println("Error. User " + username + " not found");
 		} else {
+			//ask new data for each field
 			boolean hasChange = false;
 			User userToUpdate = loginObj.getDBManager().getUserByUsername(username);
 			System.out.println("Current values");
@@ -266,29 +268,32 @@ public class Menu {
 				System.out.println("No access to this command.You are not Admin");
 				break;
 			}
-			registerUsers();
+			registerUsersOp();
 			break;
 		case "rm":
+			//Remove user
 			if (loginObj.getRoleLoggedInUser() == Role.USER || loginObj.getRoleLoggedInUser() == Role.EDITOR) {
 				System.out.println("No access to this command.You are not Admin");
 				break;
 			}
-			removeUser();
+			removeUserOp();
 			break;
 		case "u":
+			// Update users
 			if (loginObj.getRoleLoggedInUser() == Role.USER || loginObj.getRoleLoggedInUser() == Role.EDITOR) {
 				System.out.println("No access to this command.You are not Admin");
 				break;
 			}
-			// Manage users
 			updateUserOp();
 			break;
 		case "e":
+			// Edit messages
+			// TODO unimplemented
 			if (loginObj.getRoleLoggedInUser() == Role.USER) {
 				System.out.println("No access to this command.You are not Admin or Editor");
 				break;
 			}
-			// Edit messages
+			
 			break;
 		case "del":
 			// Delete message
@@ -307,6 +312,7 @@ public class Menu {
 			loginObj.getLoggedInUser().readIncomeMessages();
 			break;
 		case "l":
+			//logout
 			loginObj.logout();
 			break;
 		default:
