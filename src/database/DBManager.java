@@ -174,5 +174,24 @@ public class DBManager {
 		}
 		disconnect();
 	}
+	public boolean msgIdExists(int id) {
+		connect();
+		boolean found=false;
+		ResultSet rs;
+		try {
+			PreparedStatement stmt = conn.prepareStatement("SELECT id FROM messages WHERE id=?");
+			stmt.setInt(1, id);
+			rs = stmt.executeQuery();
+			if (rs.next())
+				found=true;
+			stmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		disconnect();
+		return found;
+	}
 
 }

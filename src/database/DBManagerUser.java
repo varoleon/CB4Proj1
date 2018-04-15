@@ -44,7 +44,7 @@ public class DBManagerUser extends DBManager {
 		return mId;
 	}
 	
-	private ResultSet fetchIncomeMsgsByUserId(int id) throws SQLException {
+	private ResultSet fetchReceivedMsgsByUserId(int id) throws SQLException {
 		String sql = "SELECT messages.id,users.username,users.name,body,timestamp " + "FROM messages "
 				+ "INNER JOIN users ON messages.sender = users.id " + "WHERE receiver=? " + "ORDER BY timestamp ASC";
 		PreparedStatement stmt = conn.prepareStatement(sql);
@@ -52,11 +52,11 @@ public class DBManagerUser extends DBManager {
 		return stmt.executeQuery();
 	}
 	
-	public void printIncomeMessages(int id) {
+	public void printReceivedMessages(int id) {
 		connect();
 		ResultSet rs = null;
 		try {
-			rs = fetchIncomeMsgsByUserId(id);
+			rs = fetchReceivedMsgsByUserId(id);
 			while (rs.next()) {
 				System.out.println("Message id: " + rs.getInt("id"));
 				System.out.println("Sent on: " + rs.getString("timestamp"));

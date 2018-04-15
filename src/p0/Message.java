@@ -48,7 +48,7 @@ public class Message {
 	}
 
 	public void storeToDb() {
-		this.sender.storeMsgToDB(sender.getId(), receiver.getId(), body, timestamp);
+		this.id = this.sender.storeMsgToDB(sender.getId(), receiver.getId(), body, timestamp);
 	}
 
 	private void writeToFile(String filepath) {

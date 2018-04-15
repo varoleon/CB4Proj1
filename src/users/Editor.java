@@ -14,8 +14,12 @@ public class Editor extends User {
 		return dbm.deleteMessageById(id);
 	}
 	
-	public int editMessage() {
-		return dbm.editMessage();
+	public int editMessage(int id,String body) {
+		return dbm.updateMessageById(id,body);
+	}
+	
+	public void readSentMsgsOfUser(String username) {
+		dbm.printSentMessages(username);
 	}
 
 }

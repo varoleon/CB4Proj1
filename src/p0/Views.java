@@ -9,6 +9,7 @@ public class Views {
 		System.out.println("------------------------");
 	}
 	private static void editorOptions() {
+		System.out.println("o    => Read anyone's sent messages");
 		System.out.println("e    => Edit a Message");
 		System.out.println("del  => Delete a Message");
 	}

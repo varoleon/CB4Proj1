@@ -73,13 +73,12 @@ public class User {
 		return m;
 	}
 	
-	public void readIncomeMessages() {
-		dbm.printIncomeMessages(id);
+	public void readReceivedMessages() {
+		dbm.printReceivedMessages(id);
 	}
 	
 	public int storeMsgToDB( int sId, int rId, String body, Timestamp timestamp ) {
-		this.id = dbm.insertNewMessage(sId, rId, body, timestamp);
-		return 0;
+		return dbm.insertNewMessage(sId, rId, body, timestamp);
 	}
 
 }

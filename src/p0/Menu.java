@@ -259,6 +259,49 @@ public class Menu {
 			}
 		}
 	}
+	
+	private void showSentMsgOfAUserOp() {
+		System.out.println("---Sent Messages of User---");
+
+		loginObj.getDBManager().printUsernames();
+		System.out.print("Select a user, from above list to read his sent messages: ");
+		String username = sc.nextLine();
+		if (!loginObj.getDBManager().isUsernameInUse(username)) {
+			System.out.println("Error. User " + username + " not found");
+		} else {
+			Editor editor = (Editor) loginObj.getLoggedInUser();
+			editor.readSentMsgsOfUser(username);
+		}
+	}
+	
+	private void editMessageOp() {
+		System.out.println("---Edit Messages---");
+		
+		
+		
+		System.out.println("To find a message id ,check the log file or run the i or o command");
+		System.out.print("Give message Id: ");
+		int id = Integer.parseInt(sc.nextLine());
+		if (!loginObj.getDBManager().msgIdExists(id)) {
+			System.out.println("Message id not found");
+		}else {
+			System.out.print("New message (press enter to skip): ");
+			String body = sc.nextLine();
+			
+			if(body.equals("")) {
+				System.out.println("Editing canceled");
+			}else {
+				Editor editor = (Editor) loginObj.getLoggedInUser();
+				if (editor.editMessage(id, body)>0) {
+					System.out.println("Message Edited");
+				}
+			}
+		}
+		
+		
+		
+		
+	}
 
 	private void menuOperations(String choice) {
 		switch (choice) {
@@ -286,14 +329,21 @@ public class Menu {
 			}
 			updateUserOp();
 			break;
-		case "e":
-			// Edit messages
-			// TODO unimplemented
+		case "o":
+			// Show anyone's sent messages
 			if (loginObj.getRoleLoggedInUser() == Role.USER) {
 				System.out.println("No access to this command.You are not Admin or Editor");
 				break;
 			}
-			
+			showSentMsgOfAUserOp();
+			break;
+		case "e":
+			// Edit messages
+			if (loginObj.getRoleLoggedInUser() == Role.USER) {
+				System.out.println("No access to this command.You are not Admin or Editor");
+				break;
+			}
+			editMessageOp();
 			break;
 		case "del":
 			// Delete message
@@ -308,8 +358,8 @@ public class Menu {
 			sendMsgOp();
 			break;
 		case "i":
-			// Income messages
-			loginObj.getLoggedInUser().readIncomeMessages();
+			//Received  messages
+			loginObj.getLoggedInUser().readReceivedMessages();
 			break;
 		case "l":
 			//logout
