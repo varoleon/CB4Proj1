@@ -13,11 +13,15 @@ public class Admin extends Editor {
 	
 	public int registerUser(String name,String username , String password, Role role) {
 		// Register process
-		return dbm.insertNewUser(name, username , password, role);
+		return dbm.insertNewUser(name, username , password, role.name());
 	}
 	
 	public int removeUser(String username) {	
 		return dbm.removeUserByUsername(username);
+	}
+	
+	public int updateUser(String username , String password ,String name, Role role) {
+		return dbm.updateUser(username, password, name, role.name());
 	}
 	
 }

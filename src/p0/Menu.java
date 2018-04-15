@@ -123,7 +123,7 @@ public class Menu {
 			String password = sc.nextLine();
 			System.out.print("Name : ");
 			String name = sc.nextLine();
-			System.out.print("Role : ");
+			System.out.print("Role (user/editor/admin): ");
 			String roleStr = sc.nextLine().toUpperCase();
 			Role role = Role.USER;
 			switch (roleStr) {
@@ -141,12 +141,12 @@ public class Menu {
 			}
 
 			Admin admin = (Admin) loginObj.getLoggedInUser();
-			if (admin.registerUser(name, username, password, role) >0) {
+			if (admin.registerUser(name, username, password, role) > 0) {
 				System.out.println("User " + username + " registered succesfully");
-			}else {
+			} else {
 				System.out.println("Error. No registration");
 			}
-			
+
 		} else {
 			System.out.println("Error. The username " + username + " already exists");
 		}
@@ -154,46 +154,107 @@ public class Menu {
 
 	private void removeUser() {
 		System.out.println("---Remove User---");
-		
+
 		loginObj.getDBManager().printUsernames();
 		System.out.print("Select a user, from above list to remove: ");
 		String username = sc.nextLine();
 		if (!loginObj.getDBManager().isUsernameInUse(username)) {
-			System.out.println("Error. User "+username+" not found");
-		}else {	
+			System.out.println("Error. User " + username + " not found");
+		} else {
 			System.out.print("Are you sure you want delete user " + username + "? (y/n): ");
 			String c = sc.nextLine();
-	
+
 			if (c.equalsIgnoreCase("y")) {
 				Admin admin = (Admin) loginObj.getLoggedInUser();
-				if (admin.removeUser(username)>0) {
+				if (admin.removeUser(username) > 0) {
 					System.out.println("User " + username + " deleted.");
-				}else {
+				} else {
 					System.out.println("Error. No deletion");
 				}
-			}else {
+			} else {
 				System.out.println("Canceled");
 			}
 		}
 	}
-	
+
 	private void deleteMsgOp() {
 		System.out.println("---Delete Message---");
 		System.out.print("Id of message: ");
 		int id = Integer.parseInt(sc.nextLine());
-		
+
 		System.out.print("Are you sure? (y/n): ");
 		String c = sc.nextLine();
 
 		if (c.equalsIgnoreCase("y")) {
 			Editor editor = (Editor) loginObj.getLoggedInUser();
-			if(editor.deleteMessage(id)>0) {
+			if (editor.deleteMessage(id) > 0) {
 				System.out.println("Message deleted");
-			}else {
-				System.out.println("Error. Message id "+id+" not found");
+			} else {
+				System.out.println("Error. Message id " + id + " not found");
 			}
-		}else {
+		} else {
 			System.out.println("Deletion canceled");
+		}
+	}
+
+	private void updateUserOp() {
+		System.out.println("---Update User---");
+
+		loginObj.getDBManager().printUsernames();
+		System.out.print("Select a user, from above list to update: ");
+		String username = sc.nextLine();
+		if (!loginObj.getDBManager().isUsernameInUse(username)) {
+			System.out.println("Error. User " + username + " not found");
+		} else {
+			boolean hasChange = false;
+			User userToUpdate = loginObj.getDBManager().getUserByUsername(username);
+			System.out.println("Current values");
+			System.out.println("\t" + userToUpdate);
+
+			System.out.print("New Password (Press enter to skip this change): ");
+			String password = sc.nextLine();
+			if (password.equals(""))
+				password = userToUpdate.getPassword();
+			else
+				hasChange = true;
+
+			System.out.print("New Name (Press enter to skip this change): ");
+			String name = sc.nextLine();
+			if (name.equals(""))
+				name = userToUpdate.getName();
+			else
+				hasChange = true;
+			System.out.print("New Role (user/editor/admin or Press enter to skip this change): ");
+			String roleStr = sc.nextLine().toUpperCase();
+			Role role = userToUpdate.getRole();
+			switch (roleStr) {
+			case "ADMIN":
+				role = Role.ADMIN;
+				hasChange = true;
+				break;
+			case "EDITOR":
+				role = Role.EDITOR;
+				hasChange = true;
+				break;
+			case "USER":
+				role = Role.USER;
+				hasChange = true;
+				break;
+			case "":
+				break;
+			default:
+				System.out.println("Didn't understand the role.No change to role");
+			}
+			if (hasChange) {
+				Admin admin = (Admin) loginObj.getLoggedInUser();
+				if (admin.updateUser(username, password, name, role) > 0) {
+					System.out.println("User " + username + " updated succesfully");
+				} else {
+					System.out.println("Error. No update");
+				}
+			} else {
+				System.out.println("No change made");
+			}
 		}
 	}
 
@@ -220,6 +281,7 @@ public class Menu {
 				break;
 			}
 			// Manage users
+			updateUserOp();
 			break;
 		case "e":
 			if (loginObj.getRoleLoggedInUser() == Role.USER) {
@@ -229,7 +291,7 @@ public class Menu {
 			// Edit messages
 			break;
 		case "del":
-			//Delete message
+			// Delete message
 			if (loginObj.getRoleLoggedInUser() == Role.USER) {
 				System.out.println("No access to this command.You are not Admin or Editor");
 				break;

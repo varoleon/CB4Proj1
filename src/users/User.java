@@ -54,7 +54,7 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [name=" + name + ", username=" + username + ", role=" + role + "]";
+		return "Username:" + username + ", Password:" + password + ", Name:"+name+", Role:" + role;
 	}
 
 	public String getPassword() {
