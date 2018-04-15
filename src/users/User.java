@@ -1,9 +1,14 @@
-package p0;
+package users;
+
+import database.DBManager;
+import p0.Message;
 
 public class User {
 	protected String name, username, password;
 	protected Role role;
 	protected int id;
+	
+	private DBManager dbm;
 
 	public User(int id, String name, String username, String password) {
 		super();
@@ -12,6 +17,7 @@ public class User {
 		this.username = username;
 		this.password = password;
 		this.role = Role.USER;
+		this.dbm = new DBManager();
 	}
 
 	public String getName() {
@@ -24,6 +30,10 @@ public class User {
 
 	public String getUsername() {
 		return username;
+	}
+	
+	public int getId() {
+		return id;
 	}
 
 	public void setUsername(String username) {
@@ -53,15 +63,15 @@ public class User {
 	
 	public Message messageTo(User receiver, String message) {
 		Message m =new Message(this, receiver, message);
+		//store to db must run first to get message id from db
+		m.storeToDb();
 		m.saveToLog();
 		m.saveToSenderReceiverFile();
-		m.storeToDb();
 		return m;
 	}
 	
 	public void readIncomeMessages() {
-		Database db =Database.getDbInst();
-		db.printIncomeMessages(id);
+		dbm.printIncomeMessages(id);
 	}
 	
 

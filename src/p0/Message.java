@@ -6,11 +6,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Timestamp;
 
+import database.DBManager;
+import users.User;
+
 public class Message {
 	protected User sender;
 	protected User receiver;
 	protected String body;
 	protected Timestamp timestamp;
+	protected int id;
 	private boolean isResponse = false;
 
 	public Message(User sender, User receiver, String body) {
@@ -24,7 +28,7 @@ public class Message {
 
 	@Override
 	public String toString() {
-		return "Message From: " + sender.username + "\t  To: " + receiver.username + "\nSent on: " + timestamp + "\n\t"
+		return "Message id:"+id+"\nFrom: " + sender.getUsername() + "\t  To: " + receiver.getUsername() + "\nSent on: " + timestamp + "\n\t"
 				+ body;
 	}
 
@@ -33,18 +37,18 @@ public class Message {
 	}
 
 	public void saveToSenderReceiverFile() {
-		if (new File(Config.CONVERSATION_FOLDER + this.receiver.username + "_to_" + this.sender.username + ".txt")
+		if (new File(Config.CONVERSATION_FOLDER + this.receiver.getUsername() + "_to_" + this.sender.getUsername() + ".txt")
 				.exists()) {
 			isResponse = true;
-			writeToFile(Config.CONVERSATION_FOLDER + this.receiver.username + "_to_" + this.sender.username + ".txt");
+			writeToFile(Config.CONVERSATION_FOLDER + this.receiver.getUsername() + "_to_" + this.sender.getUsername() + ".txt");
 		} else {
-			writeToFile(Config.CONVERSATION_FOLDER + this.sender.username + "_to_" + this.receiver.username + ".txt");
+			writeToFile(Config.CONVERSATION_FOLDER + this.sender.getUsername() + "_to_" + this.receiver.getUsername() + ".txt");
 		}
 	}
 
 	public void storeToDb() {
-		Database db = Database.getDbInst();
-		db.insertNewMessage(sender.id, receiver.id, body, timestamp);
+		DBManager dbm = new DBManager();
+		this.id=dbm.insertNewMessage(sender.getId(), receiver.getId(), body, timestamp);
 	}
 
 	private void writeToFile(String filepath) {

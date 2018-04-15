@@ -2,6 +2,11 @@ package p0;
 
 import java.util.Scanner;
 
+import users.Admin;
+import users.Editor;
+import users.Role;
+import users.User;
+
 public class Menu {
 	private Scanner sc;
 	private Login loginObj;
@@ -87,13 +92,12 @@ public class Menu {
 	}
 
 	public void sendMsgOp() {
-		Database db = Database.getDbInst();
-		db.printUsernames();
+		loginObj.getDBManager().printUsernames();
 		System.out.println("Choose from the above list");
 		System.out.print("Receiver (username): ");
 		String username = sc.nextLine();
 
-		User receiver = db.getUserByUsername(username);
+		User receiver = loginObj.getDBManager().getUserByUsername(username);
 
 		// check the existence of receiver
 		if (receiver != null) {
@@ -113,8 +117,7 @@ public class Menu {
 		String username = sc.nextLine();
 
 		// check username availability
-		Database db = Database.getDbInst();
-		if (!db.isUsernameInUse(username)) {
+		if (!loginObj.getDBManager().isUsernameInUse(username)) {
 
 			System.out.print("Password : ");
 			String password = sc.nextLine();
@@ -138,9 +141,12 @@ public class Menu {
 			}
 
 			Admin admin = (Admin) loginObj.getLoggedInUser();
-
-			admin.registerUser(name, username, password, role);
-			System.out.println("User " + username + " registered succesfully");
+			if (admin.registerUser(name, username, password, role) >0) {
+				System.out.println("User " + username + " registered succesfully");
+			}else {
+				System.out.println("Error. No registration");
+			}
+			
 		} else {
 			System.out.println("Error. The username " + username + " already exists");
 		}
@@ -148,18 +154,46 @@ public class Menu {
 
 	private void removeUser() {
 		System.out.println("---Remove User---");
-		Database db = Database.getDbInst();
-		db.printUsernames();
+		
+		loginObj.getDBManager().printUsernames();
 		System.out.print("Select a user, from above list to remove: ");
 		String username = sc.nextLine();
-
-		System.out.print("Are you sure you want delete user " + username + "? (y/n): ");
+		if (!loginObj.getDBManager().isUsernameInUse(username)) {
+			System.out.println("Error. User "+username+" not found");
+		}else {	
+			System.out.print("Are you sure you want delete user " + username + "? (y/n): ");
+			String c = sc.nextLine();
+	
+			if (c.equalsIgnoreCase("y")) {
+				Admin admin = (Admin) loginObj.getLoggedInUser();
+				if (admin.removeUser(username)>0) {
+					System.out.println("User " + username + " deleted.");
+				}else {
+					System.out.println("Error. No deletion");
+				}
+			}else {
+				System.out.println("Canceled");
+			}
+		}
+	}
+	
+	private void deleteMsgOp() {
+		System.out.println("---Delete Message---");
+		System.out.print("Id of message: ");
+		int id = Integer.parseInt(sc.nextLine());
+		
+		System.out.print("Are you sure? (y/n): ");
 		String c = sc.nextLine();
 
 		if (c.equalsIgnoreCase("y")) {
-			Admin admin = (Admin) loginObj.getLoggedInUser();
-			admin.removeUser(username);
-			System.out.print("User " + username + " deleted.");
+			Editor editor = (Editor) loginObj.getLoggedInUser();
+			if(editor.deleteMessage(id)>0) {
+				System.out.println("Message deleted");
+			}else {
+				System.out.println("Error. Message id "+id+" not found");
+			}
+		}else {
+			System.out.println("Deletion canceled");
 		}
 	}
 
@@ -193,6 +227,14 @@ public class Menu {
 				break;
 			}
 			// Edit messages
+			break;
+		case "del":
+			//Delete message
+			if (loginObj.getRoleLoggedInUser() == Role.USER) {
+				System.out.println("No access to this command.You are not Admin or Editor");
+				break;
+			}
+			deleteMsgOp();
 			break;
 		case "s":
 			// Send message to someone
