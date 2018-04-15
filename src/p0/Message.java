@@ -23,13 +23,12 @@ public class Message {
 		this.receiver = receiver;
 		this.body = body;
 		timestamp = new Timestamp(System.currentTimeMillis());
-
 	}
 
 	@Override
 	public String toString() {
-		return "Message id:"+id+"\nFrom: " + sender.getUsername() + "\t  To: " + receiver.getUsername() + "\nSent on: " + timestamp + "\n\t"
-				+ body;
+		return "Message id:" + id + "\nFrom: " + sender.getUsername() + "\t  To: " + receiver.getUsername()
+				+ "\nSent on: " + timestamp + "\n\t" + body;
 	}
 
 	public void saveToLog() {
@@ -37,18 +36,21 @@ public class Message {
 	}
 
 	public void saveToSenderReceiverFile() {
-		if (new File(Config.CONVERSATION_FOLDER + this.receiver.getUsername() + "_to_" + this.sender.getUsername() + ".txt")
-				.exists()) {
+		if (new File(
+				Config.CONVERSATION_FOLDER + this.receiver.getUsername() + "_to_" + this.sender.getUsername() + ".txt")
+						.exists()) {
 			isResponse = true;
-			writeToFile(Config.CONVERSATION_FOLDER + this.receiver.getUsername() + "_to_" + this.sender.getUsername() + ".txt");
+			writeToFile(Config.CONVERSATION_FOLDER + this.receiver.getUsername() + "_to_" + this.sender.getUsername()
+					+ ".txt");
 		} else {
-			writeToFile(Config.CONVERSATION_FOLDER + this.sender.getUsername() + "_to_" + this.receiver.getUsername() + ".txt");
+			writeToFile(Config.CONVERSATION_FOLDER + this.sender.getUsername() + "_to_" + this.receiver.getUsername()
+					+ ".txt");
 		}
 	}
 
 	public void storeToDb() {
 		DBManager dbm = new DBManager();
-		this.id=dbm.insertNewMessage(sender.getId(), receiver.getId(), body, timestamp);
+		this.id = dbm.insertNewMessage(sender.getId(), receiver.getId(), body, timestamp);
 	}
 
 	private void writeToFile(String filepath) {
