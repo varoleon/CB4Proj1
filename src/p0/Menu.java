@@ -207,7 +207,7 @@ public class Menu {
 		if (!loginObj.getDBManager().isUsernameInUse(username)) {
 			System.out.println("Error. User " + username + " not found");
 		} else {
-			//ask new data for each field
+			// ask new data for each field
 			boolean hasChange = false;
 			User userToUpdate = loginObj.getDBManager().getUserByUsername(username);
 			System.out.println("Current values");
@@ -259,7 +259,7 @@ public class Menu {
 			}
 		}
 	}
-	
+
 	private void showSentMsgOfAUserOp() {
 		System.out.println("---Sent Messages of User---");
 
@@ -273,36 +273,33 @@ public class Menu {
 			editor.readSentMsgsOfUser(username);
 		}
 	}
-	
+
 	private void editMessageOp() {
 		System.out.println("---Edit Messages---");
-				
+
 		Editor editor = (Editor) loginObj.getLoggedInUser();
-		
+
 		System.out.println("To find a message id ,check the log file or run the i or o command");
 		System.out.print("Give message Id: ");
 		int id = Integer.parseInt(sc.nextLine());
 		if (!loginObj.getDBManager().msgIdExists(id)) {
 			System.out.println("Message id not found");
-		}else {
-			Message m=editor.getMessage(id);
+		} else {
+			Message m = editor.getMessage(id);
 			System.out.println(m);
 			System.out.print("New message (press enter to skip): ");
 			String body = sc.nextLine();
-			
-			if(body.equals("")) {
+
+			if (body.equals("")) {
 				System.out.println("Editing canceled");
-			}else {
-				
-				if (editor.editMessage(m, body)>0) {
+			} else {
+
+				if (editor.editMessage(m, body) > 0) {
 					System.out.println("Message Edited");
 				}
 			}
 		}
-		
-		
-		
-		
+
 	}
 
 	private void menuOperations(String choice) {
@@ -316,7 +313,7 @@ public class Menu {
 			registerUsersOp();
 			break;
 		case "rm":
-			//Remove user
+			// Remove user
 			if (loginObj.getRoleLoggedInUser() == Role.USER || loginObj.getRoleLoggedInUser() == Role.EDITOR) {
 				System.out.println("No access to this command.You are not Admin");
 				break;
@@ -360,11 +357,11 @@ public class Menu {
 			sendMsgOp();
 			break;
 		case "i":
-			//Received  messages
+			// Received messages
 			loginObj.getLoggedInUser().readReceivedMessages();
 			break;
 		case "l":
-			//logout
+			// logout
 			loginObj.logout();
 			break;
 		default:

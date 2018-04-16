@@ -6,13 +6,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 
-
 public class DBManagerUser extends DBManager {
 
 	public DBManagerUser() {
 		super();
 	}
-	
+
 	// InsertNewMessage returns auto generated message id
 	public int insertNewMessage(int sId, int rId, String body, Timestamp timestamp) {
 		connect();
@@ -21,19 +20,18 @@ public class DBManagerUser extends DBManager {
 
 		try {
 			PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			mapParams(stmt, new Object[] {sId, rId, body, timestamp});
-		
+			mapParams(stmt, new Object[] { sId, rId, body, timestamp });
+
 			stmt.executeUpdate();
 
 			ResultSet mIdrs = stmt.getGeneratedKeys();
 			mId = 0;
 			while (mIdrs.next()) {
 				mId = mIdrs.getInt(1);
-			}		
+			}
 			stmt.close();
 			mIdrs.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -41,14 +39,13 @@ public class DBManagerUser extends DBManager {
 		return mId;
 	}
 
-	
 	public void printReceivedMessages(int id) {
 		connect();
 		String sql = "SELECT messages.id,users.username,users.name,body,timestamp " + "FROM messages "
 				+ "INNER JOIN users ON messages.sender = users.id " + "WHERE receiver=? " + "ORDER BY timestamp ASC";
-		ResultSet rs = fetchPrepared(sql, new Object[] {id});
+		ResultSet rs = fetchPrepared(sql, new Object[] { id });
 		try {
-			
+
 			while (rs.next()) {
 				System.out.println("Message id: " + rs.getInt("id"));
 				System.out.println("Sent on: " + rs.getString("timestamp"));

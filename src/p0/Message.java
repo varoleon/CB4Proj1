@@ -38,15 +38,14 @@ public class Message {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	public void setEditedBy(String name) {
 		this.editedBy = name;
 	}
-	
+
 	public int getId() {
 		return this.id;
 	}
-
 
 	public String getBody() {
 		return body;
@@ -73,10 +72,6 @@ public class Message {
 		}
 	}
 
-//	public void storeToDb() {
-//		this.id = this.sender.storeMsgToDB(sender.getId(), receiver.getId(), body, timestamp);
-//	}
-
 	public void writeToFile(String filepath) {
 		File file = new File(filepath);
 		BufferedWriter bw = null;
@@ -92,8 +87,8 @@ public class Message {
 			FileWriter fw = new FileWriter(file, true);
 			bw = new BufferedWriter(fw);
 
-			if (editedBy!=null) {
-				bw.append("---UPDATED by "+editedBy+"---\n");
+			if (editedBy != null) {
+				bw.append("---UPDATED by " + editedBy + "---\n");
 			}
 			if (isResponse) {
 				String identation = "\t\t\t\t";

@@ -3,15 +3,14 @@ package database;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-
 public class DBManagerAdmin extends DBManagerEditor {
 	public DBManagerAdmin() {
 		super();
 	}
-	
+
 	public int insertNewUser(String name, String username, String password, String role) {
 		connect();
-		int res=0;
+		int res = 0;
 		String sql = "INSERT INTO users VALUES (NULL, ?, ?, ?, (SELECT id FROM roles WHERE roleTitle=?))";
 		try {
 			PreparedStatement stmt = conn.prepareStatement(sql);
@@ -22,7 +21,6 @@ public class DBManagerAdmin extends DBManagerEditor {
 			res = stmt.executeUpdate();
 			stmt.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		disconnect();
@@ -38,23 +36,20 @@ public class DBManagerAdmin extends DBManagerEditor {
 			res = stmt.executeUpdate();
 			stmt.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		disconnect();
 		return res;
 	}
-	
+
 	public int updateUser(String username, String password, String name, String role) {
 		connect();
-		int res=0;
-		
+		int res = 0;
+
 		try {
-			String sql="UPDATE users SET users.password= ?, "
-					+ "users.name= ?, "
-					+ "users.role= (SELECT id FROM roles WHERE roleTitle=?) "
-					+ "WHERE users.username=?";
+			String sql = "UPDATE users SET users.password= ?, " + "users.name= ?, "
+					+ "users.role= (SELECT id FROM roles WHERE roleTitle=?) " + "WHERE users.username=?";
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setString(1, password);
 			stmt.setString(2, name);
@@ -63,10 +58,9 @@ public class DBManagerAdmin extends DBManagerEditor {
 			res = stmt.executeUpdate();
 			stmt.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		disconnect();
 		return res;
 	}

@@ -11,21 +11,24 @@ public class Editor extends User {
 		this.role = Role.EDITOR;
 		this.dbm = new DBManagerEditor();
 	}
+
 	public int deleteMessage(int id) {
 		return dbm.deleteMessageById(id);
 	}
+
 	public Message getMessage(int id) {
 		return dbm.getMsgById(id);
 	}
-	public int editMessage(Message m,String body) {
-		int res = dbm.updateMessageById(m.getId(),body);
-		
-		//Set the this.username as editor
+
+	public int editMessage(Message m, String body) {
+		int res = dbm.updateMessageById(m.getId(), body);
+
+		// Set the this.username as editor
 		m.setEditedBy(username);
 		m.saveToLog();
 		return res;
 	}
-	
+
 	public void readSentMsgsOfUser(String username) {
 		dbm.printSentMessages(username);
 	}
