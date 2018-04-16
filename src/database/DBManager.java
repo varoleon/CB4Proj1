@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.Timestamp;
 
 import users.Admin;
 import users.Editor;
@@ -26,63 +26,48 @@ public class DBManager {
 		}
 	}
 
-	protected ResultSet queryDB(String sql) {
-		ResultSet rs = null;
-		if (conn != null) {
-			try {
-				Statement stmt;
-				stmt = conn.createStatement();
-				rs = stmt.executeQuery(sql);
-
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-		return rs;
+	
+	protected void mapParams(PreparedStatement ps, Object... args) throws SQLException {
+	    int i = 1;
+	    for (Object arg : args) {
+	    	if (arg instanceof Timestamp)
+	    		ps.setTimestamp(i++, (Timestamp) arg);
+		    else if (arg instanceof Integer) {
+		        ps.setInt(i++, (Integer) arg);
+		    } else if (arg instanceof Long) {
+		        ps.setLong(i++, (Long) arg);
+		    } else if (arg instanceof Double) {
+		        ps.setDouble(i++, (Double) arg);
+		    } else if (arg instanceof Float) {
+		        ps.setFloat(i++, (Float) arg);
+		    } else {
+		        ps.setString(i++, (String) arg);
+		    }
+	   }
 	}
-
-	protected int modifyDB(String sql) {
-		int result = 0;
-		if (conn != null) {
-			try {
-				Statement stmt = conn.createStatement();
-				result = stmt.executeUpdate(sql);
-				stmt.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return result;
+	
+	protected ResultSet fetchPrepared(String sql, Object[] args){
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement(sql);
+			mapParams(stmt, args);
+			return stmt.executeQuery();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+			
+		return null;
+		
 	}
-
-	private ResultSet fetchUsernamesByUsername(String username) throws SQLException {
-		String sql = "SELECT users.id, users.name, users.username, users.password, roles.roleTitle "
-				+ "FROM project1.users " + "INNER JOIN roles ON users.role = roles.id " + "WHERE users.username = ? ";
-		PreparedStatement stmt = conn.prepareStatement(sql);
-		stmt.setString(1, username);
-
-		return stmt.executeQuery();
-	}
-
-	private ResultSet fetchPasswordByUserId(int id) throws SQLException {
-		PreparedStatement stmt = conn.prepareStatement("SELECT password FROM users WHERE id=?");
-		stmt.setInt(1, id);
-		return stmt.executeQuery();
-	}
-
 
 	public boolean isUsernameInUse(String username) {
 		connect();
-		ResultSet rs = null;
 		boolean returnFlag = false;
+		ResultSet rs = fetchPrepared("SELECT COUNT(1) FROM users WHERE username=?", new Object[] {username});
 		try {
-			rs = fetchUsernamesByUsername(username);
-
 			if (rs.next()) {
-				returnFlag = true;
+				returnFlag = rs.getInt(1)==1?true:false;
 			}
 			rs.close();
 		} catch (SQLException e) {
@@ -97,9 +82,50 @@ public class DBManager {
 		connect();
 		ResultSet rs;
 		User userToReturn = null;
+		String sql = "SELECT users.id, users.name, users.username, users.password, roles.roleTitle "
+				+ "FROM project1.users " + "INNER JOIN roles ON users.role = roles.id " + "WHERE users.username = ? ";
+		rs = fetchPrepared(sql, new Object[] { username });
+		
 		try {
-			rs = fetchUsernamesByUsername(username);
+			if (!rs.next()) {
+				return null;
+			} else {
+				switch (rs.getString("roleTitle")) {
+				case "USER":
+					userToReturn = new User(rs.getInt("id"), rs.getString("name"), rs.getString("username"),
+							rs.getString("password"));
+					break;
+				case "EDITOR":
+					userToReturn = new Editor(rs.getInt("id"), rs.getString("name"), rs.getString("username"),
+							rs.getString("password"));
+					break;
+				case "ADMIN":
+					userToReturn = new Admin(rs.getInt("id"), rs.getString("name"), rs.getString("username"),
+							rs.getString("password"));
+					break;
+				default:
+					break;
+				}
+			}
+			rs.close();
 
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		disconnect();
+		return userToReturn;
+	}
+	
+	public User getUserById(int id) {
+		connect();
+		ResultSet rs;
+		User userToReturn = null;
+		String sql = "SELECT users.id, users.name, users.username, users.password, roles.roleTitle "
+				+ "FROM project1.users " + "INNER JOIN roles ON users.role = roles.id " + "WHERE users.id = ? ";
+		rs = fetchPrepared(sql, new Object[] { id });
+		
+		try {
 			if (!rs.next()) {
 				return null;
 			} else {
@@ -130,13 +156,14 @@ public class DBManager {
 		return userToReturn;
 	}
 
+
 	public boolean checkPassword(int id, String password) {
 		connect();
 		ResultSet rs = null;
 		Boolean returnFlag = false;
-
-		try {
-			rs = fetchPasswordByUserId(id);
+		String sql= "SELECT password FROM users WHERE id=?";
+		rs = fetchPrepared(sql,new Object[] {id});
+		try {	
 			while (rs.next()) {
 				if (rs.getString(1).equals(password)) {
 					returnFlag = true;
@@ -155,8 +182,9 @@ public class DBManager {
 
 	public void printUsernames() {
 		connect();
-		ResultSet rs = queryDB("SELECT username FROM users");
 		try {
+			PreparedStatement stmt = conn.prepareStatement("SELECT username FROM users");
+			ResultSet rs = stmt.executeQuery();
 
 			int i = 0;
 			while (rs.next()) {
@@ -174,10 +202,11 @@ public class DBManager {
 		}
 		disconnect();
 	}
+	
 	public boolean msgIdExists(int id) {
 		connect();
 		boolean found=false;
-		ResultSet rs;
+		ResultSet rs = fetchPrepared("SELECT COUNT(1) FROM messages WHERE id=?", new Object[] {id});
 		try {
 			PreparedStatement stmt = conn.prepareStatement("SELECT id FROM messages WHERE id=?");
 			stmt.setInt(1, id);

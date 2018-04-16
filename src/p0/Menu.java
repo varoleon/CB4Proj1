@@ -276,8 +276,8 @@ public class Menu {
 	
 	private void editMessageOp() {
 		System.out.println("---Edit Messages---");
-		
-		
+				
+		Editor editor = (Editor) loginObj.getLoggedInUser();
 		
 		System.out.println("To find a message id ,check the log file or run the i or o command");
 		System.out.print("Give message Id: ");
@@ -285,14 +285,16 @@ public class Menu {
 		if (!loginObj.getDBManager().msgIdExists(id)) {
 			System.out.println("Message id not found");
 		}else {
+			Message m=editor.getMessage(id);
+			System.out.println(m);
 			System.out.print("New message (press enter to skip): ");
 			String body = sc.nextLine();
 			
 			if(body.equals("")) {
 				System.out.println("Editing canceled");
 			}else {
-				Editor editor = (Editor) loginObj.getLoggedInUser();
-				if (editor.editMessage(id, body)>0) {
+				
+				if (editor.editMessage(m, body)>0) {
 					System.out.println("Message Edited");
 				}
 			}

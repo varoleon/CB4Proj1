@@ -3,11 +3,50 @@ package database;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+
+import p0.Message;
+import users.User;
+
 
 public class DBManagerEditor extends DBManagerUser {
 	public DBManagerEditor() {
 		super();
 	}
+	
+	public Message getMsgById(int id) {
+		
+		connect();
+		String sql = "SELECT * FROM messages WHERE id=?";
+		ResultSet rs = fetchPrepared(sql, new Object[] {id});
+		Message msgToReturn=null;
+		int s=0,r=0;
+		String b=null;
+		Timestamp t=null;
+		try {
+			if (rs.next()) {
+				s=rs.getInt("sender");
+				r=rs.getInt("receiver");
+				b=rs.getString("body");
+				t=rs.getTimestamp("timestamp");
+			}
+			rs.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		disconnect();
+		
+		User sender=getUserById(s);
+		User receiver = getUserById(r);
+
+		msgToReturn= new Message(sender,receiver, b);
+		msgToReturn.setId(id);
+		msgToReturn.setTimestamp(t);
+		
+		return msgToReturn;
+	}
+	
 
 	public int updateMessageById(int id,String body) {
 		connect();
@@ -17,8 +56,7 @@ public class DBManagerEditor extends DBManagerUser {
 			String sql="UPDATE messages SET messages.body= ? "
 					+ "WHERE messages.id=?";
 			PreparedStatement stmt = conn.prepareStatement(sql);
-			stmt.setString(1, body);
-			stmt.setInt(2, id);
+			mapParams(stmt, new Object[] {body,id});
 
 			res = stmt.executeUpdate();
 			stmt.close();
@@ -46,7 +84,9 @@ public class DBManagerEditor extends DBManagerUser {
 		disconnect();
 		return res;
 	}
-
+	
+	//TODO make change to fetch data as is in database to make new message object
+	//and need a query to call a view
 	private ResultSet fetchSentMsgsByUsername(String username) throws SQLException {
 		String sql = "SELECT messages.id, user1.username as sender, user2.username as receiver, messages.body, messages.timestamp "
 				+ "FROM messages "
@@ -57,12 +97,12 @@ public class DBManagerEditor extends DBManagerUser {
 		stmt.setString(1, username);
 		return stmt.executeQuery();
 	}
+	
 
 	public void printSentMessages(String username) {
 		connect();
-		ResultSet rs = null;
 		try {
-			rs = fetchSentMsgsByUsername(username);
+			ResultSet rs = fetchSentMsgsByUsername(username);
 			while (rs.next()) {
 				System.out.println("Message id: " + rs.getInt("id"));
 				System.out.println("Sent on: " + rs.getString("timestamp"));

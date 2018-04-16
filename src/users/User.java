@@ -64,21 +64,23 @@ public class User {
 		return password;
 	}
 	
-	public Message messageTo(User receiver, String message) {
-		Message m =new Message(this, receiver, message);
+	public Message messageTo(User receiver, String messageBody) {
+		Message m =new Message(this, receiver, messageBody);
 		//store to db must run first to get message id from db
-		m.storeToDb();
+		storeMsgToDB(receiver.id, m.getBody() , m.getTimestamp());
 		m.saveToLog();
 		m.saveToSenderReceiverFile();
 		return m;
+	}
+	
+	public int storeMsgToDB(int rId, String body, Timestamp timestamp ) {
+		return dbm.insertNewMessage(id, rId, body, timestamp);
 	}
 	
 	public void readReceivedMessages() {
 		dbm.printReceivedMessages(id);
 	}
 	
-	public int storeMsgToDB( int sId, int rId, String body, Timestamp timestamp ) {
-		return dbm.insertNewMessage(sId, rId, body, timestamp);
-	}
+	
 
 }

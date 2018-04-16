@@ -1,6 +1,7 @@
 package users;
 
 import database.DBManagerEditor;
+import p0.Message;
 
 public class Editor extends User {
 	private DBManagerEditor dbm;
@@ -13,9 +14,16 @@ public class Editor extends User {
 	public int deleteMessage(int id) {
 		return dbm.deleteMessageById(id);
 	}
-	
-	public int editMessage(int id,String body) {
-		return dbm.updateMessageById(id,body);
+	public Message getMessage(int id) {
+		return dbm.getMsgById(id);
+	}
+	public int editMessage(Message m,String body) {
+		int res = dbm.updateMessageById(m.getId(),body);
+		
+		//Set the this.username as editor
+		m.setEditedBy(username);
+		m.saveToLog();
+		return res;
 	}
 	
 	public void readSentMsgsOfUser(String username) {

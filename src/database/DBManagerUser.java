@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 
+
 public class DBManagerUser extends DBManager {
 
 	public DBManagerUser() {
@@ -20,19 +21,15 @@ public class DBManagerUser extends DBManager {
 
 		try {
 			PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			stmt.setInt(1, sId);
-			stmt.setInt(2, rId);
-			stmt.setString(3, body);
-			stmt.setTimestamp(4, timestamp);
-
+			mapParams(stmt, new Object[] {sId, rId, body, timestamp});
+		
 			stmt.executeUpdate();
 
 			ResultSet mIdrs = stmt.getGeneratedKeys();
 			mId = 0;
 			while (mIdrs.next()) {
 				mId = mIdrs.getInt(1);
-			}
-			
+			}		
 			stmt.close();
 			mIdrs.close();
 		} catch (SQLException e) {
@@ -43,20 +40,15 @@ public class DBManagerUser extends DBManager {
 		disconnect();
 		return mId;
 	}
-	
-	private ResultSet fetchReceivedMsgsByUserId(int id) throws SQLException {
-		String sql = "SELECT messages.id,users.username,users.name,body,timestamp " + "FROM messages "
-				+ "INNER JOIN users ON messages.sender = users.id " + "WHERE receiver=? " + "ORDER BY timestamp ASC";
-		PreparedStatement stmt = conn.prepareStatement(sql);
-		stmt.setInt(1, id);
-		return stmt.executeQuery();
-	}
+
 	
 	public void printReceivedMessages(int id) {
 		connect();
-		ResultSet rs = null;
+		String sql = "SELECT messages.id,users.username,users.name,body,timestamp " + "FROM messages "
+				+ "INNER JOIN users ON messages.sender = users.id " + "WHERE receiver=? " + "ORDER BY timestamp ASC";
+		ResultSet rs = fetchPrepared(sql, new Object[] {id});
 		try {
-			rs = fetchReceivedMsgsByUserId(id);
+			
 			while (rs.next()) {
 				System.out.println("Message id: " + rs.getInt("id"));
 				System.out.println("Sent on: " + rs.getString("timestamp"));
