@@ -42,6 +42,10 @@ public class Message {
 	public void setEditedBy(String name) {
 		this.editedBy = name;
 	}
+	
+	public void setBody(String body) {
+		this.body = body;
+	}
 
 	public int getId() {
 		return this.id;
@@ -88,7 +92,7 @@ public class Message {
 			bw = new BufferedWriter(fw);
 
 			if (editedBy != null) {
-				bw.append("---UPDATED by " + editedBy + "---\n");
+				bw.append("---EDITED by " + editedBy + "---\n");
 			}
 			if (isResponse) {
 				String identation = "\t\t\t\t";
@@ -111,5 +115,6 @@ public class Message {
 		}
 
 	}
+
 
 }

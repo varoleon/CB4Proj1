@@ -22,10 +22,13 @@ public class Editor extends User {
 
 	public int editMessage(Message m, String body) {
 		int res = dbm.updateMessageById(m.getId(), body);
-
+		
+		//update instance
+		m.setBody( body );
 		// Set the this.username as editor
 		m.setEditedBy(username);
 		m.saveToLog();
+		m.saveToSenderReceiverFile();
 		return res;
 	}
 

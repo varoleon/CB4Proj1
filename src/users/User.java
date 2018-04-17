@@ -66,7 +66,8 @@ public class User {
 	public Message messageTo(User receiver, String messageBody) {
 		Message m = new Message(this, receiver, messageBody);
 		// store to db must run first to get message id from db
-		storeMsgToDB(receiver.id, m.getBody(), m.getTimestamp());
+		
+		m.setId(storeMsgToDB(receiver.id, m.getBody(), m.getTimestamp()));
 		m.saveToLog();
 		m.saveToSenderReceiverFile();
 		return m;
