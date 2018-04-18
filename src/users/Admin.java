@@ -16,6 +16,8 @@ public class Admin extends Editor {
 	}
 
 	public int removeUser(String username) {
+		if (username.equals(this.username))
+			return 0;
 		return dbm.removeUserByUsername(username);
 	}
 

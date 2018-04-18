@@ -22,8 +22,10 @@ public class DBManagerEditor extends DBManagerUser {
 		int s = 0, r = 0;
 		String b = null;
 		Timestamp t = null;
+		boolean found=false;
 		try {
 			if (rs.next()) {
+				found=true;
 				s = rs.getInt("sender");
 				r = rs.getInt("receiver");
 				b = rs.getString("body");
@@ -34,14 +36,14 @@ public class DBManagerEditor extends DBManagerUser {
 			e.printStackTrace();
 		}
 		disconnect();
-
-		User sender = getUserById(s);
-		User receiver = getUserById(r);
-
-		msgToReturn = new Message(sender, receiver, b);
-		msgToReturn.setId(id);
-		msgToReturn.setTimestamp(t);
-
+		if (found) {
+			User sender = getUserById(s);
+			User receiver = getUserById(r);
+	
+			msgToReturn = new Message(sender, receiver, b);
+			msgToReturn.setId(id);
+			msgToReturn.setTimestamp(t);
+		}
 		return msgToReturn;
 	}
 

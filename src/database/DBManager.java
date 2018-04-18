@@ -77,11 +77,10 @@ public class DBManager {
 
 	public User getUserByUsername(String username) {
 		connect();
-		ResultSet rs;
 		User userToReturn = null;
 		String sql = "SELECT users.id, users.name, users.username, users.password, roles.roleTitle "
 				+ "FROM project1.users " + "INNER JOIN roles ON users.role = roles.id " + "WHERE users.username = ? ";
-		rs = fetchPrepared(sql, new Object[] { username });
+		ResultSet rs = fetchPrepared(sql, new Object[] { username });
 
 		try {
 			if (!rs.next()) {
@@ -101,6 +100,7 @@ public class DBManager {
 							rs.getString("password"));
 					break;
 				default:
+					System.out.println("Error. Invalid role");
 					break;
 				}
 			}
@@ -153,26 +153,6 @@ public class DBManager {
 		return userToReturn;
 	}
 
-	public boolean checkPassword(int id, String password) {
-		connect();
-		ResultSet rs = null;
-		Boolean returnFlag = false;
-		String sql = "SELECT password FROM users WHERE id=?";
-		rs = fetchPrepared(sql, new Object[] { id });
-		try {
-			while (rs.next()) {
-				if (rs.getString(1).equals(password)) {
-					returnFlag = true;
-				}
-			}
-			rs.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		disconnect();
-		return returnFlag;
-	}
 
 	public void printUsernames() {
 		connect();
@@ -197,23 +177,23 @@ public class DBManager {
 		disconnect();
 	}
 
-	public boolean msgIdExists(int id) {
-		connect();
-		boolean found = false;
-		ResultSet rs = fetchPrepared("SELECT COUNT(1) FROM messages WHERE id=?", new Object[] { id });
-		try {
-			PreparedStatement stmt = conn.prepareStatement("SELECT id FROM messages WHERE id=?");
-			stmt.setInt(1, id);
-			rs = stmt.executeQuery();
-			if (rs.next())
-				found = true;
-			stmt.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		disconnect();
-		return found;
-	}
+//	public boolean msgIdExists(int id) {
+//		connect();
+//		boolean found = false;
+//		ResultSet rs = fetchPrepared("SELECT COUNT(1) FROM messages WHERE id=?", new Object[] { id });
+//		try {
+//			PreparedStatement stmt = conn.prepareStatement("SELECT id FROM messages WHERE id=?");
+//			stmt.setInt(1, id);
+//			rs = stmt.executeQuery();
+//			if (rs.next())
+//				found = true;
+//			stmt.close();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//
+//		disconnect();
+//		return found;
+//	}
 
 }

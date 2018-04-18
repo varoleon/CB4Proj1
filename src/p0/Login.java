@@ -34,9 +34,7 @@ public class Login {
 		return isLoggedIn;
 	}
 
-	public void setLoggedIn(boolean isLoggedIn) {
-		this.isLoggedIn = isLoggedIn;
-	}
+
 
 	public User getLoggedInUser() {
 		return loggedInUser;
@@ -46,7 +44,7 @@ public class Login {
 		// Login process
 		User user = dbm.getUserByUsername(username);
 		if (user != null) {
-			if (dbm.checkPassword(user.getId(), password)) {
+			if (user.getPassword().equals(password)) {
 				loggedInUser = user;
 				isLoggedIn = true;
 				return true;

@@ -61,7 +61,7 @@ public class Menu {
 				break;
 
 			// Print menu according to logged in user role
-			printMainMenu();
+			printMainMenu(loginObj.getRoleLoggedInUser());
 
 			System.out.print("Enter> ");
 			String choice = sc.nextLine();
@@ -75,8 +75,8 @@ public class Menu {
 
 	}
 
-	private void printMainMenu() {
-		switch (loginObj.getRoleLoggedInUser()) {
+	private void printMainMenu(Role role) {
+		switch (role) {
 		case ADMIN:
 			Views.adminMainMenu();
 			break;
@@ -156,17 +156,21 @@ public class Menu {
 	private void removeUserOp() {
 		System.out.println("---Remove User---");
 
+		Admin admin = (Admin) loginObj.getLoggedInUser();
+		
 		loginObj.getDBManager().printUsernames();
 		System.out.print("Select a user, from above list to remove: ");
 		String username = sc.nextLine();
 		if (!loginObj.getDBManager().isUsernameInUse(username)) {
 			System.out.println("Error. User " + username + " not found");
-		} else {
+		}else if (username.equals(admin.getUsername())) {
+			System.out.println("No you can't delete yourself");
+		}else {
 			System.out.print("Are you sure you want delete user " + username + "? (y/n): ");
 			String c = sc.nextLine();
 
 			if (c.equalsIgnoreCase("y")) {
-				Admin admin = (Admin) loginObj.getLoggedInUser();
+				
 				if (admin.removeUser(username) > 0) {
 					System.out.println("User " + username + " deleted.");
 				} else {
@@ -280,24 +284,38 @@ public class Menu {
 		Editor editor = (Editor) loginObj.getLoggedInUser();
 
 		System.out.println("To find a message id ,check the log file or run the i or o command");
-		System.out.print("Give message Id: ");
-		int id = Integer.parseInt(sc.nextLine());
-		if (!loginObj.getDBManager().msgIdExists(id)) {
-			System.out.println("Message id not found");
+		System.out.print("Give message Id (or press enter to skip): ");
+		String c = sc.nextLine();
+
+		if (c.equals("")) {
+			System.out.println("Canceled");
 		} else {
-			Message m = editor.getMessage(id);
-			System.out.println(m);
-			System.out.print("New message (press enter to skip): ");
-			String body = sc.nextLine();
 
-			if (body.equals("")) {
-				System.out.println("Editing canceled");
-			} else {
+			try {
+				int id = Integer.parseInt(c);
+				Message m = editor.getMessage(id);
+				if (m == null) {
+					System.out.println("Message id not found");
+				} else {
+					System.out.println(m);
+					System.out.print("New message (press enter to skip): ");
+					String body = sc.nextLine();
 
-				if (editor.editMessage(m, body) > 0) {
-					System.out.println("Message Edited");
+					if (body.equals("")) {
+						System.out.println("Editing canceled");
+					} else {
+
+						if (editor.editMessage(m, body) > 0) {
+							System.out.println("Message Edited");
+						}
+					}
 				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("You should entered a number");
 			}
+
 		}
 
 	}
