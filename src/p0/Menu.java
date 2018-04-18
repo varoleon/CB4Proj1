@@ -157,20 +157,20 @@ public class Menu {
 		System.out.println("---Remove User---");
 
 		Admin admin = (Admin) loginObj.getLoggedInUser();
-		
+
 		loginObj.getDBManager().printUsernames();
 		System.out.print("Select a user, from above list to remove: ");
 		String username = sc.nextLine();
 		if (!loginObj.getDBManager().isUsernameInUse(username)) {
 			System.out.println("Error. User " + username + " not found");
-		}else if (username.equals(admin.getUsername())) {
+		} else if (username.equals(admin.getUsername())) {
 			System.out.println("No you can't delete yourself");
-		}else {
+		} else {
 			System.out.print("Are you sure you want delete user " + username + "? (y/n): ");
 			String c = sc.nextLine();
 
 			if (c.equalsIgnoreCase("y")) {
-				
+
 				if (admin.removeUser(username) > 0) {
 					System.out.println("User " + username + " deleted.");
 				} else {
