@@ -57,23 +57,8 @@ public class DBManager {
 		return null;
 
 	}
-
-	public boolean isUsernameInUse(String username) {
-		connect();
-		boolean returnFlag = false;
-		ResultSet rs = fetchPrepared("SELECT COUNT(1) FROM users WHERE username=?", new Object[] { username });
-		try {
-			if (rs.next()) {
-				returnFlag = rs.getInt(1) == 1 ? true : false;
-			}
-			rs.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		disconnect();
-		return returnFlag;
-	}
+//
+//	
 
 	public User getUserByUsername(String username) {
 		connect();
@@ -152,48 +137,10 @@ public class DBManager {
 		disconnect();
 		return userToReturn;
 	}
-
-
-	public void printUsernames() {
-		connect();
-		try {
-			PreparedStatement stmt = conn.prepareStatement("SELECT username FROM users");
-			ResultSet rs = stmt.executeQuery();
-
-			int i = 0;
-			while (rs.next()) {
-				System.out.print(String.format("%s\t\t", rs.getString("username")));
-				if (++i % 4 == 0) {
-					System.out.println();
-				}
-			}
-			if (i % 4 != 0) {
-				System.out.println();
-			}
-			rs.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		disconnect();
-	}
-
-//	public boolean msgIdExists(int id) {
-//		connect();
-//		boolean found = false;
-//		ResultSet rs = fetchPrepared("SELECT COUNT(1) FROM messages WHERE id=?", new Object[] { id });
-//		try {
-//			PreparedStatement stmt = conn.prepareStatement("SELECT id FROM messages WHERE id=?");
-//			stmt.setInt(1, id);
-//			rs = stmt.executeQuery();
-//			if (rs.next())
-//				found = true;
-//			stmt.close();
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
 //
-//		disconnect();
-//		return found;
-//	}
+//
+//	
+//
+////	
 
 }

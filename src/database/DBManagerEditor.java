@@ -12,6 +12,27 @@ public class DBManagerEditor extends DBManagerUser {
 	public DBManagerEditor() {
 		super();
 	}
+	
+	public boolean msgIdExists(int id) {
+		connect();
+		boolean found = false;
+		ResultSet rs = fetchPrepared("SELECT COUNT(1) FROM messages WHERE id=?", new Object[] { id });
+		try {
+			PreparedStatement stmt = conn.prepareStatement("SELECT id FROM messages WHERE id=?");
+			stmt.setInt(1, id);
+			rs = stmt.executeQuery();
+			if (rs.next())
+				found = true;
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	
+		disconnect();
+		return found;
+	}
+	
+	
 
 	public Message getMsgById(int id) {
 
@@ -82,32 +103,6 @@ public class DBManagerEditor extends DBManagerUser {
 		return res;
 	}
 
-	private ResultSet fetchSentMsgsByUsername(String username) throws SQLException {
-		String sql = "SELECT messages.id, user1.username as sender, user2.username as receiver, messages.body, messages.timestamp "
-				+ "FROM messages " + "INNER JOIN users user1 ON sender=user1.id "
-				+ "INNER JOIN users user2 ON receiver=user2.id "
-				+ "WHERE user1.id=(SELECT id FROM users WHERE username=?)";
-		PreparedStatement stmt = conn.prepareStatement(sql);
-		stmt.setString(1, username);
-		return stmt.executeQuery();
-	}
-
-	public void printSentMessages(String username) {
-		connect();
-		try {
-			ResultSet rs = fetchSentMsgsByUsername(username);
-			while (rs.next()) {
-				System.out.println("Message id: " + rs.getInt("id"));
-				System.out.println("Sent on: " + rs.getString("timestamp"));
-				System.out.println("Sender: " + rs.getString("sender") + "\t\tReceiver: " + rs.getString("receiver"));
-				System.out.println("\t" + rs.getString("body"));
-				System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
-			}
-			rs.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		disconnect();
-	}
+	
 
 }
