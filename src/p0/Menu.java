@@ -26,11 +26,11 @@ public class Menu {
 			if (terminate)
 				break;
 			System.out.print("Give \"login\" or \"exit\" : ");
-			String choice = sc.nextLine();
+			String inp = sc.nextLine();
 
-			if (choice.equalsIgnoreCase("exit")) {
+			if (inp.equalsIgnoreCase("exit")) {
 				break;
-			} else if (choice.equalsIgnoreCase("login")) {
+			} else if (inp.equalsIgnoreCase("login")) {
 
 				if (loginObj.login()) {
 					System.out.printf("\nHello %s. You are logged in.\n", loginObj.getNameLoggedInUser());
@@ -55,13 +55,13 @@ public class Menu {
 			printMainMenu(loginObj.getRoleLoggedInUser());
 
 			System.out.print("Enter> ");
-			String choice = sc.nextLine();
-			if (choice.equalsIgnoreCase("exit")) {
+			String inp = sc.nextLine();
+			if (inp.equalsIgnoreCase("exit")) {
 				terminate = true;
 				break;
 			}
 			// Menu operations
-			menuOperations(choice);
+			menuOperations(inp);
 		}
 
 	}
@@ -168,8 +168,8 @@ public class Menu {
 
 	}
 
-	private void menuOperations(String choice) {
-		switch (choice) {
+	private void menuOperations(String inp) {
+		switch (inp) {
 		case "1":
 			// Send message to someone
 			sendMsgOp();

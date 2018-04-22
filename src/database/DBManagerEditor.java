@@ -12,7 +12,7 @@ public class DBManagerEditor extends DBManagerUser {
 	public DBManagerEditor() {
 		super();
 	}
-	
+
 	public boolean msgIdExists(int id) {
 		connect();
 		boolean found = false;
@@ -27,12 +27,10 @@ public class DBManagerEditor extends DBManagerUser {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	
+
 		disconnect();
 		return found;
 	}
-	
-	
 
 	public Message getMsgById(int id) {
 
@@ -43,10 +41,10 @@ public class DBManagerEditor extends DBManagerUser {
 		int s = 0, r = 0;
 		String b = null;
 		Timestamp t = null;
-		boolean found=false;
+		boolean found = false;
 		try {
 			if (rs.next()) {
-				found=true;
+				found = true;
 				s = rs.getInt("sender");
 				r = rs.getInt("receiver");
 				b = rs.getString("body");
@@ -60,7 +58,7 @@ public class DBManagerEditor extends DBManagerUser {
 		if (found) {
 			User sender = getUserById(s);
 			User receiver = getUserById(r);
-	
+
 			msgToReturn = new Message(sender, receiver, b);
 			msgToReturn.setId(id);
 			msgToReturn.setTimestamp(t);
@@ -102,7 +100,5 @@ public class DBManagerEditor extends DBManagerUser {
 		disconnect();
 		return res;
 	}
-
-	
 
 }

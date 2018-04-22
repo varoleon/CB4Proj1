@@ -6,6 +6,7 @@ public class Views {
 		System.out.println("exit=> Exit");
 		System.out.println("------------------------");
 	}
+
 	private static void userOptions() {
 		System.out.println("1   => Send Message");
 		System.out.println("2   => Read your received messages");
@@ -53,5 +54,5 @@ public class Views {
 		System.out.println("Welcome to the application");
 		System.out.println("Please log in to continue\n");
 	}
-	
+
 }

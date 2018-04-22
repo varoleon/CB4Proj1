@@ -32,12 +32,12 @@ public class Admin extends Editor {
 			System.out.println("Didn't understand the role. I'll create a USER");
 			role = Role.USER;
 		}
-		return (dbm.insertNewUser(name, username, password, role.name())>0)?true:false;
-		
+		return (dbm.insertNewUser(name, username, password, role.name()) > 0) ? true : false;
+
 	}
 
 	public boolean removeUser() {
-		
+
 		dbm.printUsernamesInCols();
 		System.out.print("Select a user, from above list to remove: ");
 		String username = Menu.sc.nextLine();
@@ -52,18 +52,17 @@ public class Admin extends Editor {
 			String c = Menu.sc.nextLine();
 
 			if (c.equalsIgnoreCase("y")) {
-				return (dbm.removeUserByUsername(username)>0)?true:false;
+				return (dbm.removeUserByUsername(username) > 0) ? true : false;
 			} else {
 				System.out.println("Canceled");
 				return false;
 			}
 		}
 
-		
 	}
 
 	public boolean updateUser() {
-		
+
 		dbm.printUsernamesInCols();
 		System.out.print("Select a user, from above list to update: ");
 		String username = Menu.sc.nextLine();
@@ -96,26 +95,26 @@ public class Admin extends Editor {
 				System.out.println("KENO");
 				return false;
 			}
-			Role role=mapRole(roleStr);
-			if (role==null) {
+			Role role = mapRole(roleStr);
+			if (role == null) {
 				System.out.println("Didn't understand the role. Default role: USER");
-				role=Role.USER;
+				role = Role.USER;
 			}
-		
-			if (userToUpdate.getRole()!=role) {
-				hasChange=true;
+
+			if (userToUpdate.getRole() != role) {
+				hasChange = true;
 			}
-			
+
 			if (hasChange) {
-				return (dbm.updateUser(username, password, name, role.name())>0)?true:false;	
+				return (dbm.updateUser(username, password, name, role.name()) > 0) ? true : false;
 			} else {
 				return false;
 			}
 		}
 	}
-	
+
 	private Role mapRole(String roleStr) {
-		Role role=null;
+		Role role = null;
 		switch (roleStr) {
 		case "ADMIN":
 			role = Role.ADMIN;

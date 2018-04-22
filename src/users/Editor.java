@@ -35,10 +35,6 @@ public class Editor extends User {
 		return false;
 	}
 
-	// public Message getMessage(int id) {
-	// return dbm.getMsgById(id);
-	// }
-
 	public boolean editMessage() {
 		System.out.println("To find a message id ,check the log file or run the i or o command");
 		System.out.print("Give message Id (or press enter to skip): ");
@@ -82,6 +78,7 @@ public class Editor extends User {
 		}
 		return false;
 	}
+
 	public void readReceivedMsgsOfUser() {
 		dbm.printUsernamesInCols();
 		System.out.print("Select a user, from above list to read his received messages: ");
@@ -89,7 +86,7 @@ public class Editor extends User {
 		if (!dbm.isUsernameInUse(username)) {
 			System.out.println("Error. User " + username + " not found");
 		} else {
-			dbm.printMessages(username,true); //true for received
+			dbm.printMessages(username, true); // true for received
 		}
 
 	}
@@ -101,7 +98,7 @@ public class Editor extends User {
 		if (!dbm.isUsernameInUse(username)) {
 			System.out.println("Error. User " + username + " not found");
 		} else {
-			dbm.printMessages(username,false); //false for sent
+			dbm.printMessages(username, false); // false for sent
 		}
 
 	}

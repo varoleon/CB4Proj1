@@ -63,14 +63,14 @@ public class User {
 	public String getPassword() {
 		return password;
 	}
-	
+
 	public boolean sendMessage() {
 		System.out.println("\nSelect receiver from the following list");
 		dbm.printUsernamesInCols();
-		
+
 		System.out.print("Receiver (username): ");
 		String username = Menu.sc.nextLine();
-		
+
 		User receiver = dbm.getUserByUsername(username);
 		if (receiver != null) {
 			System.out.print("Your Message: ");
@@ -81,10 +81,10 @@ public class User {
 			return false;
 		}
 	}
-	
+
 	private Message messageTo(User receiver, String messageBody) {
 		Message m = new Message(this, receiver, messageBody);
-		
+
 		// store to db must run first to get message id from db
 		m.setId(storeMsgToDB(receiver.id, m.getBody(), m.getTimestamp()));
 		m.saveToLog();
@@ -97,14 +97,11 @@ public class User {
 	}
 
 	public void readReceivedMessages() {
-		dbm.printMessages(username,true); //true for received
+		dbm.printMessages(username, true); // true for received
 	}
+
 	public void readSentMessages() {
-		dbm.printMessages(username,false); //false for sent
+		dbm.printMessages(username, false); // false for sent
 	}
-	
-//	public void printUsernames(int numOfCols) {
-//		dbm.printUsernamesInCols(numOfCols);
-//	}
 
 }

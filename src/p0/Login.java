@@ -1,6 +1,5 @@
 package p0;
 
-
 import database.DBManager;
 import users.Role;
 import users.User;
@@ -9,7 +8,6 @@ public class Login {
 	private String errorMessage = null;
 	private User loggedInUser = null;
 	private boolean isLoggedIn = false;
-
 
 	private DBManager dbm = new DBManager();
 
@@ -28,15 +26,9 @@ public class Login {
 		return loggedInUser.getRole();
 	}
 
-//	public DBManager getDBManager() {
-//		return dbm;
-//	}
-
 	public boolean isLoggedIn() {
 		return isLoggedIn;
 	}
-
-
 
 	public User getLoggedInUser() {
 		return loggedInUser;
@@ -48,7 +40,7 @@ public class Login {
 		String username = Menu.sc.nextLine();
 		System.out.print("Password : ");
 		String password = Menu.sc.nextLine();
-		
+
 		User user = dbm.getUserByUsername(username);
 		if (user != null) {
 			if (user.getPassword().equals(password)) {
