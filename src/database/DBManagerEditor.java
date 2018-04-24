@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-import p0.Message;
+import app.Message;
 import users.User;
 
 public class DBManagerEditor extends DBManagerUser {

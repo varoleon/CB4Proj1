@@ -1,4 +1,4 @@
-package p0;
+package app;
 
 public class Views {
 	private static void commonOptions() {

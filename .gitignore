@@ -12,3 +12,5 @@
 hs_err_pid*
 
 src/p0/MainTest\.java
+
+src/app/MainTest\.java

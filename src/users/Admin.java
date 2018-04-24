@@ -1,7 +1,7 @@
 package users;
 
+import app.Menu;
 import database.DBManagerAdmin;
-import p0.Menu;
 
 public class Admin extends Editor {
 	private DBManagerAdmin dbm;
@@ -42,7 +42,7 @@ public class Admin extends Editor {
 		System.out.print("Select a user, from above list to remove: ");
 		String username = Menu.sc.nextLine();
 		if (!dbm.isUsernameInUse(username)) {
-			System.out.println("Error. User " + username + " not found");
+			System.out.println("User " + username + " not found");
 			return false;
 		} else if (username.equals(this.username)) {
 			System.out.println("No you can't delete yourself");
@@ -92,7 +92,6 @@ public class Admin extends Editor {
 			System.out.print("New Role (user/editor/admin or Press enter to skip this change): ");
 			String roleStr = Menu.sc.nextLine().toUpperCase();
 			if (roleStr.equals("")) {
-				System.out.println("KENO");
 				return false;
 			}
 			Role role = mapRole(roleStr);

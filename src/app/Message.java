@@ -1,4 +1,4 @@
-package p0;
+package app;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -78,39 +78,46 @@ public class Message {
 
 	public void writeToFile(String filepath) {
 		File file = new File(filepath);
-		BufferedWriter bw = null;
 
 		if (!file.exists()) {
 			try {
 				file.createNewFile();
 
-				FileWriter fw = new FileWriter(file, true);
-				bw = new BufferedWriter(fw);
-
-				if (editedBy != null) {
-					bw.append("---EDITED by " + editedBy + "---\n");
-				}
-				if (isResponse) {
-					String identation = "\t\t\t\t";
-					bw.append(identation + this.toString().replace("\n", "\n" + identation));
-					bw.append("\n" + identation + "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
-				} else {
-					bw.append(this.toString());
-					bw.append("\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
-				}
-
 			} catch (IOException e) {
 				e.printStackTrace();
 				System.out.println("Error with file or conversation directory. Check Config class");
-			} finally {
-				try {
-					if (bw != null)
-						bw.close();
-				} catch (Exception ex) {
-					System.out.println("Error in closing the BufferedWriter" + ex);
-				}
-			}
 
+			}
+		}
+
+		FileWriter fw;
+		BufferedWriter bw = null;
+		try {
+
+			fw = new FileWriter(file, true);
+			bw = new BufferedWriter(fw);
+
+			if (editedBy != null) {
+				bw.append("---EDITED by " + editedBy + "---\n");
+			}
+			if (isResponse) {
+				String identation = "\t\t\t\t";
+				bw.append(identation + this.toString().replace("\n", "\n" + identation));
+				bw.append("\n" + identation + "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
+			} else {
+				bw.append(this.toString());
+				bw.append("\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("File error");
+		} finally {
+			try {
+				if (bw != null)
+					bw.close();
+			} catch (Exception ex) {
+				System.out.println("Error in closing the BufferedWriter" + ex);
+			}
 		}
 	}
 }

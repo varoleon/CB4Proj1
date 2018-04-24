@@ -2,9 +2,9 @@ package users;
 
 import java.sql.Timestamp;
 
+import app.Menu;
+import app.Message;
 import database.DBManagerUser;
-import p0.Menu;
-import p0.Message;
 
 public class User {
 	protected String name, username, password;

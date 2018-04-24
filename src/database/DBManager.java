@@ -55,10 +55,7 @@ public class DBManager {
 		}
 
 		return null;
-
 	}
-	//
-	//
 
 	public User getUserByUsername(String username) {
 		connect();

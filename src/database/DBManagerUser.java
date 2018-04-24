@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 
-import p0.Config;
+import app.Config;
 
 public class DBManagerUser extends DBManager {
 
@@ -110,13 +110,17 @@ public class DBManagerUser extends DBManager {
 			} else {
 				rs = fetchSentMsgsByUsername(username);
 			}
-
-			while (rs.next()) {
-				System.out.println("Message id: " + rs.getInt("id"));
-				System.out.println("Sent on: " + rs.getString("timestamp"));
-				System.out.println("Sender: " + rs.getString("sender") + "\tReceiver: " + rs.getString("receiver"));
-				System.out.println("\t" + rs.getString("body"));
-				System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+			if (!rs.next()) {
+				System.out.println("0 " + ((received) ? "received" : "sent") + " messages");
+			} else {
+				rs.beforeFirst();
+				while (rs.next()) {
+					System.out.println("Message id: " + rs.getInt("id"));
+					System.out.println("Sent on: " + rs.getString("timestamp"));
+					System.out.println("Sender: " + rs.getString("sender") + "\tReceiver: " + rs.getString("receiver"));
+					System.out.println("\t" + rs.getString("body"));
+					System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+				}
 			}
 			rs.close();
 		} catch (SQLException e) {

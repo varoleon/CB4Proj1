@@ -1,8 +1,8 @@
 package users;
 
+import app.Menu;
+import app.Message;
 import database.DBManagerEditor;
-import p0.Menu;
-import p0.Message;
 
 public class Editor extends User {
 	private DBManagerEditor dbm;
@@ -21,7 +21,7 @@ public class Editor extends User {
 				System.out.println("Message id " + id + " not found");
 				return false;
 			}
-
+			System.out.println(dbm.getMsgById(id));
 			System.out.print("Are you sure you want to delete it? (y/n): ");
 			String c = Menu.sc.nextLine();
 			if (c.equalsIgnoreCase("y")) {
@@ -36,7 +36,7 @@ public class Editor extends User {
 	}
 
 	public boolean editMessage() {
-		System.out.println("To find a message id ,check the log file or run the i or o command");
+		System.out.println("To find a message id ,check the log file or run the 4 or 5 command");
 		System.out.print("Give message Id (or press enter to skip): ");
 		String c = Menu.sc.nextLine();
 
