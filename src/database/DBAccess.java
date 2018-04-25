@@ -10,7 +10,7 @@ import users.Admin;
 import users.Editor;
 import users.User;
 
-public class DBManager {
+public class DBAccess {
 	protected Connection conn;
 
 	protected void connect() {

@@ -3,8 +3,8 @@ package database;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class DBManagerAdmin extends DBManagerEditor {
-	public DBManagerAdmin() {
+public class DBAccessAdmin extends DBAccessEditor {
+	public DBAccessAdmin() {
 		super();
 	}
 

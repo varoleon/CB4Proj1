@@ -2,7 +2,7 @@ package app;
 
 import java.util.Scanner;
 
-import database.DBManager;
+import database.DBAccess;
 import users.Admin;
 import users.Editor;
 import users.Role;
@@ -11,7 +11,7 @@ import users.User;
 public class Menu {
 	public static final Scanner sc = new Scanner(System.in);
 	
-	private DBManager dbm;
+	private DBAccess dao;
 	private User loggedInUser = null;
 	private boolean isLoggedIn = false;
 	
@@ -19,7 +19,7 @@ public class Menu {
 
 
 	public Menu() {
-		dbm = new DBManager();
+		dao = new DBAccess();
 	}
 
 	// Welcome and prompts for login
@@ -56,7 +56,7 @@ public class Menu {
 		System.out.print("Password : ");
 		String password = sc.nextLine();
 
-		User user = dbm.getUserByUsername(username);
+		User user = dao.getUserByUsername(username);
 		if (user != null) {
 			if (user.getPassword().equals(password)) {
 				loggedInUser = user;

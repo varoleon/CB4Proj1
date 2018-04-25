@@ -1,15 +1,15 @@
 package users;
 
 import app.Menu;
-import database.DBManagerAdmin;
+import database.DBAccessAdmin;
 
 public class Admin extends Editor {
-	private DBManagerAdmin dbm;
+	private DBAccessAdmin dao;
 
 	public Admin(int id, String name, String username, String password) {
 		super(id, name, username, password);
 		this.role = Role.ADMIN;
-		this.dbm = new DBManagerAdmin();
+		this.dao = new DBAccessAdmin();
 	}
 
 	public boolean registerUser() {
@@ -17,7 +17,7 @@ public class Admin extends Editor {
 		String username = Menu.sc.nextLine();
 
 		// check username availability
-		if (dbm.isUsernameInUse(username)) {
+		if (dao.isUsernameInUse(username)) {
 			System.out.println("Error. The username " + username + " already exists");
 			return false;
 		}
@@ -32,16 +32,16 @@ public class Admin extends Editor {
 			System.out.println("Didn't understand the role. I'll create a USER");
 			role = Role.USER;
 		}
-		return (dbm.insertNewUser(name, username, password, role.name()) > 0) ? true : false;
+		return (dao.insertNewUser(name, username, password, role.name()) > 0) ? true : false;
 
 	}
 
 	public boolean removeUser() {
 
-		dbm.printUsernamesInCols();
+		dao.printUsernamesInCols();
 		System.out.print("Select a user, from above list to remove: ");
 		String username = Menu.sc.nextLine();
-		if (!dbm.isUsernameInUse(username)) {
+		if (!dao.isUsernameInUse(username)) {
 			System.out.println("User " + username + " not found");
 			return false;
 		} else if (username.equals(this.username)) {
@@ -52,7 +52,7 @@ public class Admin extends Editor {
 			String c = Menu.sc.nextLine();
 
 			if (c.equalsIgnoreCase("y")) {
-				return (dbm.removeUserByUsername(username) > 0) ? true : false;
+				return (dao.removeUserByUsername(username) > 0) ? true : false;
 			} else {
 				System.out.println("Canceled");
 				return false;
@@ -63,16 +63,16 @@ public class Admin extends Editor {
 
 	public boolean updateUser() {
 
-		dbm.printUsernamesInCols();
+		dao.printUsernamesInCols();
 		System.out.print("Select a user, from above list to update: ");
 		String username = Menu.sc.nextLine();
-		if (!dbm.isUsernameInUse(username)) {
+		if (!dao.isUsernameInUse(username)) {
 			System.out.println("Error. User " + username + " not found");
 			return false;
 		} else {
 			// ask new data for each field
 			boolean hasChange = false;
-			User userToUpdate = dbm.getUserByUsername(username);
+			User userToUpdate = dao.getUserByUsername(username);
 			System.out.println("Current values");
 			System.out.println("\t" + userToUpdate);
 
@@ -105,7 +105,7 @@ public class Admin extends Editor {
 			}
 
 			if (hasChange) {
-				return (dbm.updateUser(username, password, name, role.name()) > 0) ? true : false;
+				return (dao.updateUser(username, password, name, role.name()) > 0) ? true : false;
 			} else {
 				return false;
 			}

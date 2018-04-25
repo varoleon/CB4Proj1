@@ -4,14 +4,14 @@ import java.sql.Timestamp;
 
 import app.Menu;
 import app.Message;
-import database.DBManagerUser;
+import database.DBAccessUser;
 
 public class User {
 	protected String name, username, password;
 	protected Role role;
 	protected int id;
 
-	private DBManagerUser dbm;
+	private DBAccessUser dao;
 
 	public User(int id, String name, String username, String password) {
 		super();
@@ -20,7 +20,7 @@ public class User {
 		this.username = username;
 		this.password = password;
 		this.role = Role.USER;
-		this.dbm = new DBManagerUser();
+		this.dao = new DBAccessUser();
 	}
 
 	public String getName() {
@@ -66,12 +66,12 @@ public class User {
 
 	public boolean sendMessage() {
 		System.out.println("\nSelect receiver from the following list");
-		dbm.printUsernamesInCols();
+		dao.printUsernamesInCols();
 
 		System.out.print("Receiver (username): ");
 		String username = Menu.sc.nextLine();
 
-		User receiver = dbm.getUserByUsername(username);
+		User receiver = dao.getUserByUsername(username);
 		if (receiver != null) {
 			System.out.print("Your Message: ");
 			String m = Menu.sc.nextLine();
@@ -93,15 +93,15 @@ public class User {
 	}
 
 	public int storeMsgToDB(int rId, String body, Timestamp timestamp) {
-		return dbm.insertNewMessage(id, rId, body, timestamp);
+		return dao.insertNewMessage(id, rId, body, timestamp);
 	}
 
 	public void readReceivedMessages() {
-		dbm.printMessages(username, true); // true for received
+		dao.printMessages(username, true); // true for received
 	}
 
 	public void readSentMessages() {
-		dbm.printMessages(username, false); // false for sent
+		dao.printMessages(username, false); // false for sent
 	}
 
 }

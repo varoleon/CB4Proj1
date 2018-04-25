@@ -8,9 +8,9 @@ import java.sql.Timestamp;
 
 import app.Config;
 
-public class DBManagerUser extends DBManager {
+public class DBAccessUser extends DBAccess {
 
-	public DBManagerUser() {
+	public DBAccessUser() {
 		super();
 	}
 

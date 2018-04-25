@@ -2,30 +2,30 @@ package users;
 
 import app.Menu;
 import app.Message;
-import database.DBManagerEditor;
+import database.DBAccessEditor;
 
 public class Editor extends User {
-	private DBManagerEditor dbm;
+	private DBAccessEditor dao;
 
 	public Editor(int id, String name, String username, String password) {
 		super(id, name, username, password);
 		this.role = Role.EDITOR;
-		this.dbm = new DBManagerEditor();
+		this.dao = new DBAccessEditor();
 	}
 
 	public boolean deleteMessage() {
 		System.out.print("Id of message: ");
 		try {
 			int id = Integer.parseInt(Menu.sc.nextLine());
-			if (!dbm.msgIdExists(id)) {
+			if (!dao.msgIdExists(id)) {
 				System.out.println("Message id " + id + " not found");
 				return false;
 			}
-			System.out.println(dbm.getMsgById(id));
+			System.out.println(dao.getMsgById(id));
 			System.out.print("Are you sure you want to delete it? (y/n): ");
 			String c = Menu.sc.nextLine();
 			if (c.equalsIgnoreCase("y")) {
-				return (dbm.deleteMessageById(id) > 0) ? true : false;
+				return (dao.deleteMessageById(id) > 0) ? true : false;
 			} else {
 				System.out.println("Deletion canceled");
 			}
@@ -47,7 +47,7 @@ public class Editor extends User {
 
 		try {
 			int id = Integer.parseInt(c);
-			Message m = dbm.getMsgById(id);
+			Message m = dao.getMsgById(id);
 			if (m == null) {
 				System.out.println("Message id not found");
 				return false;
@@ -61,7 +61,7 @@ public class Editor extends User {
 				return false;
 			}
 
-			if (dbm.updateMessageById(m.getId(), body) > 0) {
+			if (dao.updateMessageById(m.getId(), body) > 0) {
 				// update instance
 				m.setBody(body);
 				// Set the this.username as editor
@@ -80,25 +80,25 @@ public class Editor extends User {
 	}
 
 	public void readReceivedMsgsOfUser() {
-		dbm.printUsernamesInCols();
+		dao.printUsernamesInCols();
 		System.out.print("Select a user, from above list to read his received messages: ");
 		String username = Menu.sc.nextLine();
-		if (!dbm.isUsernameInUse(username)) {
+		if (!dao.isUsernameInUse(username)) {
 			System.out.println("Error. User " + username + " not found");
 		} else {
-			dbm.printMessages(username, true); // true for received
+			dao.printMessages(username, true); // true for received
 		}
 
 	}
 
 	public void readSentMsgsOfUser() {
-		dbm.printUsernamesInCols();
+		dao.printUsernamesInCols();
 		System.out.print("Select a user, from above list to read his sent messages: ");
 		String username = Menu.sc.nextLine();
-		if (!dbm.isUsernameInUse(username)) {
+		if (!dao.isUsernameInUse(username)) {
 			System.out.println("Error. User " + username + " not found");
 		} else {
-			dbm.printMessages(username, false); // false for sent
+			dao.printMessages(username, false); // false for sent
 		}
 
 	}

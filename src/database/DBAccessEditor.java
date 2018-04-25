@@ -8,8 +8,8 @@ import java.sql.Timestamp;
 import app.Message;
 import users.User;
 
-public class DBManagerEditor extends DBManagerUser {
-	public DBManagerEditor() {
+public class DBAccessEditor extends DBAccessUser {
+	public DBAccessEditor() {
 		super();
 	}
 
