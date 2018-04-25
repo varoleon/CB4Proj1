@@ -97,14 +97,18 @@ public class Message {
 			fw = new FileWriter(file, true);
 			bw = new BufferedWriter(fw);
 
-			if (editedBy != null) {
-				bw.append("---EDITED by " + editedBy + "---\n");
-			}
+			
 			if (isResponse) {
 				String identation = "\t\t\t\t";
+				if (editedBy != null) {
+					bw.append(identation + "---EDITED by " + editedBy + "---\n");
+				}
 				bw.append(identation + this.toString().replace("\n", "\n" + identation));
 				bw.append("\n" + identation + "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
 			} else {
+				if (editedBy != null) {
+					bw.append("---EDITED by " + editedBy + "---\n");
+				}
 				bw.append(this.toString());
 				bw.append("\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
 			}
