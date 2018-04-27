@@ -2,24 +2,21 @@ package app;
 
 import java.util.Scanner;
 
-import database.DBAccess;
+import database.DBUtils;
+import users.AbstractUser;
 import users.Admin;
 import users.Editor;
-import users.Role;
-import users.User;
+import users.SimpleUser;
+
 
 public class Menu {
 	public static final Scanner sc = new Scanner(System.in);
 	
-	private DBAccess dao;
-	private User loggedInUser = null;
+	private AbstractUser loggedInUser = null;
 	private boolean isLoggedIn = false;
-	
 	private boolean terminate = false;
 
-
 	public Menu() {
-		dao = new DBAccess();
 	}
 
 	// Welcome and prompts for login
@@ -56,7 +53,7 @@ public class Menu {
 		System.out.print("Password : ");
 		String password = sc.nextLine();
 
-		User user = dao.getUserByUsername(username);
+		AbstractUser user = DBUtils.getUserByUsername(username);
 		if (user != null) {
 			if (user.getPassword().equals(password)) {
 				loggedInUser = user;
@@ -83,8 +80,7 @@ public class Menu {
 			if (!isLoggedIn)
 				break;
 
-			// Print menu according to logged in user role
-			printMainMenu(loggedInUser.getRole());
+			loggedInUser.printMenu();
 
 			System.out.print("Enter> ");
 			String inp = sc.nextLine();
@@ -98,21 +94,6 @@ public class Menu {
 
 	}
 
-	private void printMainMenu(Role role) {
-		switch (role) {
-		case ADMIN:
-			Views.adminMainMenu();
-			break;
-		case EDITOR:
-			Views.editorMainMenu();
-			break;
-		case USER:
-			Views.userMainMenu();
-			break;
-		default:
-			break;
-		}
-	}
 
 	public void sendMsgOp() {
 		System.out.println("---Send New Message---");
@@ -172,19 +153,6 @@ public class Menu {
 		}
 	}
 
-	private void showReceivedMsgOfAUserOp() {
-		System.out.println("---Received Messages of User---");
-
-		Editor editor = (Editor) loggedInUser;
-		editor.readReceivedMsgsOfUser();
-	}
-
-	private void showSentMsgOfAUserOp() {
-		System.out.println("---Sent Messages of User---");
-
-		Editor editor = (Editor) loggedInUser;
-		editor.readSentMsgsOfUser();
-	}
 
 	private void editMessageOp() {
 		System.out.println("---Edit Messages---");
@@ -208,66 +176,48 @@ public class Menu {
 		case "2":
 			// Received messages
 			System.out.println("---Received Messages---");
-			loggedInUser.readReceivedMessages();
+			loggedInUser.readReceivedMsgs();
 			break;
 		case "3":
 			// Sent messages
 			System.out.println("---Sent Messages---");
-			loggedInUser.readSentMessages();
+			loggedInUser.readSentMsgs();
 			break;
-
 		case "4":
-			// Show anyone's received messages
-			if (loggedInUser.getRole() == Role.USER) {
-				System.out.println("No access to this command.You are not Admin or Editor");
-				break;
-			}
-			showReceivedMsgOfAUserOp();
-			break;
-
-		case "5":
-			// Show anyone's sent messages
-			if (loggedInUser.getRole() == Role.USER) {
-				System.out.println("No access to this command.You are not Admin or Editor");
-				break;
-			}
-			showSentMsgOfAUserOp();
-			break;
-		case "6":
 			// Edit messages
-			if (loggedInUser.getRole() == Role.USER) {
+			if (loggedInUser instanceof SimpleUser) {
 				System.out.println("No access to this command.You are not Admin or Editor");
 				break;
 			}
 			editMessageOp();
 			break;
-		case "7":
+		case "5":
 			// Delete message
-			if (loggedInUser.getRole() == Role.USER) {
+			if (loggedInUser instanceof SimpleUser) {
 				System.out.println("No access to this command.You are not Admin or Editor");
 				break;
 			}
 			deleteMsgOp();
 			break;
-		case "8":
+		case "6":
 			// Register new user
-			if (loggedInUser.getRole() == Role.USER || loggedInUser.getRole() == Role.EDITOR) {
+			if (!(loggedInUser instanceof Admin)) {
 				System.out.println("No access to this command.You are not Admin");
 				break;
 			}
 			registerUsersOp();
 			break;
-		case "9":
+		case "7":
 			// Remove user
-			if (loggedInUser.getRole() == Role.USER || loggedInUser.getRole() == Role.EDITOR) {
+			if (!(loggedInUser instanceof Admin)){
 				System.out.println("No access to this command.You are not Admin");
 				break;
 			}
 			removeUserOp();
 			break;
-		case "10":
+		case "8":
 			// Update users
-			if (loggedInUser.getRole() == Role.USER || loggedInUser.getRole() == Role.EDITOR) {
+			if (!(loggedInUser instanceof Admin)){
 				System.out.println("No access to this command.You are not Admin");
 				break;
 			}

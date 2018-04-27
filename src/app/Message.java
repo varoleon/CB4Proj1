@@ -6,18 +6,19 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Timestamp;
 
-import users.User;
+import users.AbstractUser;
+
 
 public class Message {
-	protected User sender;
-	protected User receiver;
-	protected String body;
-	protected Timestamp timestamp;
-	protected int id;
+	private AbstractUser sender;
+	private AbstractUser receiver;
+	private String body;
+	private Timestamp timestamp;
+	private int id;
 	private boolean isResponse = false;
 	private String editedBy = null;
 
-	public Message(User sender, User receiver, String body) {
+	public Message(AbstractUser sender, AbstractUser receiver, String body) {
 		super();
 		this.sender = sender;
 		this.receiver = receiver;

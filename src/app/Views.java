@@ -9,22 +9,20 @@ public class Views {
 
 	private static void userOptions() {
 		System.out.println("1   => Send Message");
-		System.out.println("2   => Read your received messages");
-		System.out.println("3   => Read your sent messages");
+		System.out.println("2   => Read received messages");
+		System.out.println("3   => Read sent messages");
 
 	}
 
 	private static void editorOptions() {
-		System.out.println("4   => Read anyone's received messages");
-		System.out.println("5   => Read anyone's sent messages");
-		System.out.println("6   => Edit a Message");
-		System.out.println("7   => Delete a Message");
+		System.out.println("4   => Edit a Message");
+		System.out.println("5   => Delete a Message");
 	}
 
 	private static void adminOptions() {
-		System.out.println("8   => Register new user");
-		System.out.println("9   => Remove user");
-		System.out.println("10  => Update user");
+		System.out.println("6   => Register new user");
+		System.out.println("7   => Remove user");
+		System.out.println("8   => Update user");
 	}
 
 	public static void userMainMenu() {

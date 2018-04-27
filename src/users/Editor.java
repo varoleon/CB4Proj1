@@ -2,30 +2,61 @@ package users;
 
 import app.Menu;
 import app.Message;
-import database.DBAccessEditor;
+import app.Views;
+import database.DBUtils;
 
-public class Editor extends User {
-	private DBAccessEditor dao;
+public class Editor extends AbstractUser {
 
 	public Editor(int id, String name, String username, String password) {
-		super(id, name, username, password);
-		this.role = Role.EDITOR;
-		this.dao = new DBAccessEditor();
+		super(id,name,username,password);
 	}
 
+	@Override
+	public void readReceivedMsgs() {
+		DBUtils.printUsernames();
+		System.out.print("Select a user, from above list to read his received messages\n\tOr type\"mine\" to read yours: ");
+		String username = Menu.sc.nextLine();
+		
+		if (username.equalsIgnoreCase("mine"))
+			username=this.getUsername();
+		
+		if (!DBUtils.isUsernameInUse(username)) {
+			System.out.println("Error. User " + username + " not found");
+		} else {
+			DBUtils.printMessages(username, true); // true for received
+		}
+		
+	}
+
+	@Override
+	public void readSentMsgs() {
+		DBUtils.printUsernames();
+		System.out.print("Select a user, from above list to read his received messages\n\tOr type\"mine\" to read yours: ");
+		String username = Menu.sc.nextLine();
+		
+		if (username.equalsIgnoreCase("mine")) 
+			username=this.getUsername();
+			
+		if (!DBUtils.isUsernameInUse(username)) {
+			System.out.println("Error. User " + username + " not found");
+		} else {
+			DBUtils.printMessages(username, false); // true for false
+		}
+	}
+	
 	public boolean deleteMessage() {
 		System.out.print("Id of message: ");
 		try {
 			int id = Integer.parseInt(Menu.sc.nextLine());
-			if (!dao.msgIdExists(id)) {
+			if (!DBUtils.msgIdExists(id)) {
 				System.out.println("Message id " + id + " not found");
 				return false;
 			}
-			System.out.println(dao.getMsgById(id));
+			System.out.println(DBUtils.getMsgById(id));
 			System.out.print("Are you sure you want to delete it? (y/n): ");
 			String c = Menu.sc.nextLine();
 			if (c.equalsIgnoreCase("y")) {
-				return (dao.deleteMessageById(id) > 0) ? true : false;
+				return (DBUtils.deleteMessageById(id) > 0) ? true : false;
 			} else {
 				System.out.println("Deletion canceled");
 			}
@@ -47,7 +78,7 @@ public class Editor extends User {
 
 		try {
 			int id = Integer.parseInt(c);
-			Message m = dao.getMsgById(id);
+			Message m = DBUtils.getMsgById(id);
 			if (m == null) {
 				System.out.println("Message id not found");
 				return false;
@@ -61,11 +92,11 @@ public class Editor extends User {
 				return false;
 			}
 
-			if (dao.updateMessageById(m.getId(), body) > 0) {
+			if (DBUtils.updateMessageById(m.getId(), body) > 0) {
 				// update instance
 				m.setBody(body);
 				// Set the this.username as editor
-				m.setEditedBy(username);
+				m.setEditedBy(this.getUsername());
 				m.saveToLog();
 				m.saveToSenderReceiverFile();
 
@@ -79,28 +110,12 @@ public class Editor extends User {
 		return false;
 	}
 
-	public void readReceivedMsgsOfUser() {
-		dao.printUsernamesInCols();
-		System.out.print("Select a user, from above list to read his received messages: ");
-		String username = Menu.sc.nextLine();
-		if (!dao.isUsernameInUse(username)) {
-			System.out.println("Error. User " + username + " not found");
-		} else {
-			dao.printMessages(username, true); // true for received
-		}
-
+	@Override
+	public void printMenu() {
+		// TODO Auto-generated method stub
+		Views.editorMainMenu();
 	}
 
-	public void readSentMsgsOfUser() {
-		dao.printUsernamesInCols();
-		System.out.print("Select a user, from above list to read his sent messages: ");
-		String username = Menu.sc.nextLine();
-		if (!dao.isUsernameInUse(username)) {
-			System.out.println("Error. User " + username + " not found");
-		} else {
-			dao.printMessages(username, false); // false for sent
-		}
 
-	}
 
 }
